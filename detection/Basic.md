@@ -1,3 +1,10 @@
+---
+layout: post
+title: "目标检测基础知识"
+category: detection
+tags: [目标检测, 基础理论]
+---
+
 # 目标检测基础知识
 
 ## 常用术语

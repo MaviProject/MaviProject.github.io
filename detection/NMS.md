@@ -1,3 +1,10 @@
+---
+layout: post
+title: "非极大值抑制 (NMS)"
+category: detection
+tags: [目标检测, NMS, 后处理]
+---
+
 # 非极大值抑制
 
 Non-Maximum Suppression（NMS）非极大值抑制。从字面意思理解，抑制那些非极大值的元素，保留

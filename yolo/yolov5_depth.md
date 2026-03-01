@@ -1,3 +1,10 @@
+---
+layout: post
+title: "Yolov5深度剖析"
+category: yolo
+tags: [YOLO, 目标检测, 深度学习]
+---
+
 # Yolov5深度剖析
 
 ## 一、评估方式

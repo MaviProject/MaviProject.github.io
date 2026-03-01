@@ -1,3 +1,10 @@
+---
+layout: post
+title: "Llama-2 安装运行指南"
+category: llama
+tags: [LLM, Llama2, 环境搭建]
+---
+
 # Llama-2安装运行
 
 ## 一、低现存运行

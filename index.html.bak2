@@ -805,8 +805,8 @@
             <nav class="nav-links">
                 <a href="#articles">文章</a>
                 <a href="#projects">项目</a>
-                <a href="/About/">关于</a>
-                <a href="/Guess/">随想</a>
+                <a href="/About">关于</a>
+                <a href="/Guess">随想</a>
                 <a href="https://github.com/MaviProject" target="_blank">
                     <i class="fab fa-github"></i> GitHub
                 </a>
@@ -924,8 +924,8 @@
                     <ul>
                         <li><a href="#articles">所有文章</a></li>
                         <li><a href="#projects">开源项目</a></li>
-                        <li><a href="/About/">关于作者</a></li>
-                        <li><a href="/Guess/">技术随想</a></li>
+                        <li><a href="/About">关于作者</a></li>
+                        <li><a href="/Guess">技术随想</a></li>
                         <li><a href="https://github.com/MaviProject/MaviProject.github.io" target="_blank">博客源码</a></li>
                     </ul>
                 </div>
@@ -957,22 +957,76 @@
     <script>
         // 文章数据
         const articles = [
-            {% for collection in site.collections %}
-              {% if collection.label != 'posts' %}
-                {% for doc in collection.docs %}
-                {
-                    id: "{{ forloop.index }}",
-                    title: "{{ doc.title }}",
-                    category: "{{ doc.category }}",
-                    excerpt: "{{ doc.content | strip_html | truncatewords: 20 | escape }}",
-                    readTime: "{{ doc.content | strip_html | number_of_words | divided_by: 200 | plus: 1 }} 分钟",
-                    link: "{{ doc.url }}",
-                    icon: "fas fa-file-alt",
-                    tags: {{ doc.tags | jsonify }}
-                }{% unless forloop.last and forloop.parentloop.last %},{% endunless %}
-                {% endfor %}
-              {% endif %}
-            {% endfor %}
+            {
+                id: 1,
+                title: "目标检测基础知识",
+                category: "目标检测",
+                excerpt: "介绍目标检测领域的常用术语、准确率、精确率、召回率等基础概念，帮助理解模型评估指标。",
+                readTime: "8分钟",
+                link: "/detection/Basic",
+                icon: "fas fa-crosshairs",
+                tags: ["目标检测", "基础知识", "评估指标"]
+            },
+            {
+                id: 2,
+                title: "IOU损失函数",
+                category: "目标检测",
+                excerpt: "深入解析IoU、GIoU、DIoU、CIoU等边界框回归损失函数，对比各自优缺点及实现方式。",
+                readTime: "12分钟",
+                link: "/detection/IOU",
+                icon: "fas fa-search",
+                tags: ["目标检测", "损失函数", "IoU", "算法"]
+            },
+            {
+                id: 3,
+                title: "非极大值抑制(NMS)",
+                category: "目标检测",
+                excerpt: "详细介绍NMS算法原理、传统实现方法及其在目标检测中的应用，解决重复检测框问题。",
+                readTime: "10分钟",
+                link: "/detection/NMS",
+                icon: "fas fa-filter",
+                tags: ["目标检测", "NMS", "算法", "后处理"]
+            },
+            {
+                id: 4,
+                title: "YOLOv5在Ubuntu环境搭建",
+                category: "YOLO学习",
+                excerpt: "从系统环境配置、显卡驱动安装到YOLOv5项目部署，详细记录Ubuntu下的完整搭建流程。",
+                readTime: "15分钟",
+                link: "/yolo/install",
+                icon: "fas fa-camera",
+                tags: ["YOLO", "环境搭建", "Ubuntu", "深度学习"]
+            },
+            {
+                id: 5,
+                title: "输入图像尺寸对训练的影响",
+                category: "YOLO学习",
+                excerpt: "分析输入图像尺寸如何影响YOLOv5模型的感受野、全局与局部信息提取，以及训练效果。",
+                readTime: "10分钟",
+                link: "/yolo/input_size",
+                icon: "fas fa-expand-alt",
+                tags: ["YOLO", "图像处理", "训练技巧", "深度学习"]
+            },
+            {
+                id: 6,
+                title: "YOLOv5深度剖析",
+                category: "YOLO学习",
+                excerpt: "深入解析YOLOv5的评估方式、混淆矩阵、PR曲线等核心概念，帮助全面理解模型性能。",
+                readTime: "18分钟",
+                link: "/yolo/yolov5_depth",
+                icon: "fas fa-layer-group",
+                tags: ["YOLO", "模型评估", "混淆矩阵", "深度学习"]
+            },
+            {
+                id: 7,
+                title: "Llama-2安装运行",
+                category: "大语言模型",
+                excerpt: "指导如何在低显存环境下运行Llama-2，结合Llama.cpp实现模型权重下载与本地部署。",
+                readTime: "20分钟",
+                link: "/llama/install",
+                icon: "fas fa-comment",
+                tags: ["Llama-2", "大语言模型", "部署", "低显存"]
+            }
         ];
 
         // 技术栈数据
@@ -1261,6 +1315,24 @@
         }
 
         
+        // 触摸设备优化
+        function isTouchDevice() {
+            return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        }
+        
+        if (isTouchDevice()) {
+            document.body.classList.add('touch-device');
+            // 移除hover效果可能带来的问题
+            const style = document.createElement('style');
+            style.textContent = \`
+                @media (hover: hover) {
+                    .masonry-item:hover, .project-card:hover, .tech-item:hover {
+                        transform: translateY(-5px);
+                    }
+                }
+            \`;
+            document.head.appendChild(style);
+        }
 
 
         // 控制台欢迎信息

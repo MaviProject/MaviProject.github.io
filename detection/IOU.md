@@ -1,3 +1,10 @@
+---
+layout: post
+title: "IOU 损失函数详解"
+category: detection
+tags: [目标检测, 损失函数, IOU]
+---
+
 # IOU损失函数
 
 

@@ -1,3 +1,10 @@
+---
+layout: post
+title: "YOLOv5环境搭建"
+category: yolo
+tags: [YOLO, 环境搭建, Ubuntu]
+---
+
 # Yolov5在Ubuntu环境搭建
 
 ## 1. 系统环境配置

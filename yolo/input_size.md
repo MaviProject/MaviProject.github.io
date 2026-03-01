@@ -1,3 +1,10 @@
+---
+layout: post
+title: "YOLOv5 输入尺寸详解"
+category: yolo
+tags: [YOLO, 图像处理]
+---
+
 # 输入图像尺寸对训练的影响
 
 ## 关于Yolov5网络特点

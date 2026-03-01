@@ -1,38 +1,43 @@
-# GitHub Pages Jekyll configuration for root site
+# MaviProject Jekyll Configuration
 
-title: "技术大杂烩"
-description: "计算机视觉与AI技术博客"
-baseurl: ""  # root deployment
+title: "MaviProject | 技术博客"
+description: "专注于计算机视觉、目标检测、大语言模型的技术分享与实践"
+baseurl: ""
 url: "https://maviproject.github.io"
-
-# 禁用所有主题和插件
-theme: null
-plugins: []
 
 # Build settings
 markdown: kramdown
-permalink: pretty
+permalink: /:collection/:path/
 highlighter: rouge
 
-# 包含必要的文件
+# Collections for organized content
+collections:
+  yolo:
+    output: true
+    permalink: /yolo/:path/
+  detection:
+    output: true
+    permalink: /detection/:path/
+  llama:
+    output: true
+    permalink: /llama/:path/
+
+# Include assets
 include:
   - assets
 
-# 排除不需要处理的文件
-exclude: 
-  - READMe.md
+# Exclude unnecessary files
+exclude:
+  - README.md
   - .gitignore
-  - _layouts/
-  - _plugins/
   - generate_feed.sh
   - setup-giscus.md
-  - index.html
+  - update-theme-features.py
+  - GISCUS_SETUP.md
 
-# 最小化处理
-safe: true
-lsi: false
-incremental: false
-
-# 输出设置
-future: true
-unpublished: false
+# Defaults for front matter
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "post"
