@@ -1,0 +1,16 @@
+# GitHub Pages Jekyll configuration
+
+title: "技术大杂烩"
+description: "计算机视觉与AI技术博客"
+baseurl: ""
+url: "https://orvillex.github.io"
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - .gitignore
+  - assets/
