@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "目标检测基础知识"
-category: detection
-tags: [目标检测, 基础理论]
+title: "CV_DETECTION_CORE"
+category: DETECTION
+tags: [BASICS, THEORY]
+date: 2026-03-01
 ---
 
 # 目标检测基础知识

@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "Yolov5深度剖析"
-category: yolo
-tags: [YOLO, 目标检测, 深度学习]
+title: "YOLOv5_DEPTH_ANALYSIS"
+category: YOLO
+tags: [YOLO, CV, DEEP_LEARNING]
+date: 2026-03-01
 ---
 
 # Yolov5深度剖析

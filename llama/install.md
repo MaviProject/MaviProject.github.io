@@ -1,8 +1,9 @@
 ---
 layout: post
-title: "Llama-2 安装运行指南"
-category: llama
-tags: [LLM, Llama2, 环境搭建]
+title: "LLAMA_2_NEURAL_DEPLOY"
+category: LLM
+tags: [LLAMA, AI, DEPLOY]
+date: 2026-03-01
 ---
 
 # Llama-2安装运行
