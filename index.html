@@ -2,580 +2,325 @@
 layout: null
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAVI_SYS // TERMINAL</title>
-    <!-- Sci-Fi Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Michroma&display=swap" rel="stylesheet">
+    <title>MAVI_PROJECT // 神经接入终端</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <style>
         :root {
-            --bg: #030305;
-            --grid: rgba(0, 255, 170, 0.05);
-            --cyan: #00f0ff;
-            --green: #00ffaa;
-            --red: #ff2a2a;
-            --dark-panel: rgba(5, 10, 15, 0.85);
-            --border: rgba(0, 240, 255, 0.3);
+            --neon-blue: #00f2ff;
+            --neon-purple: #7000ff;
+            --neon-pink: #ff007a;
+            --dark-bg: #030508;
+            --panel-bg: rgba(10, 15, 25, 0.7);
+            --border-glow: 0 0 15px rgba(0, 242, 255, 0.4);
             --text-main: #e0ffff;
-            --text-dim: #5c8599;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: crosshair;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
         body {
-            background-color: var(--bg);
+            background-color: var(--dark-bg);
             color: var(--text-main);
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Noto Sans SC', sans-serif;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            scroll-behavior: smooth;
         }
 
-        /* ----- BACKGROUND & EFFECTS ----- */
-        #webgl-container {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2;
-        }
+        /* 3D 背景容器 */
+        #webgl-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; }
         
-        .grid-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+        /* 赛博网格与扫描线 */
+        .cyber-grid {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: 
-                linear-gradient(var(--grid) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -1;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: gridMove 20s linear infinite;
-            opacity: 0.5;
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1; transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 15s linear infinite; opacity: 0.5; pointer-events: none;
         }
-
-        @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 400px; }
-        }
-
+        @keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 0 500px; } }
+        
         .scanline {
-            width: 100%; height: 100px;
-            background: linear-gradient(0deg, rgba(0,255,170,0), rgba(0,255,170,0.1), rgba(0,255,170,0));
-            position: fixed;
-            z-index: 999;
-            pointer-events: none;
-            animation: scan 6s linear infinite;
+            width: 100%; height: 150px; position: fixed; z-index: 999; pointer-events: none;
+            background: linear-gradient(0deg, rgba(0,242,255,0), rgba(0,242,255,0.1), rgba(0,242,255,0));
+            animation: scan 8s linear infinite;
         }
+        @keyframes scan { 0% { top: -150px; } 100% { top: 100vh; } }
 
-        @keyframes scan {
-            0% { top: -100px; }
-            100% { top: 100vh; }
-        }
-
-        .vignette {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at center, transparent 30%, #000 120%);
-            z-index: 0; pointer-events: none;
-        }
-
-        /* ----- LAYOUT ----- */
-        .hud-wrapper {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding: 40px 5vw;
-        }
-
+        /* 导航栏 */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 15px;
-            margin-bottom: 60px;
-            position: relative;
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(3, 5, 8, 0.8); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 20px 5vw; display: flex; justify-content: space-between; align-items: center;
         }
+        .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--neon-blue); text-shadow: var(--border-glow); text-decoration: none; font-weight: 900; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a {
+            color: #fff; text-decoration: none; font-size: 1rem; font-weight: 700;
+            padding: 5px 10px; position: relative; transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--neon-blue); text-shadow: var(--border-glow); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
+            background: var(--neon-blue); transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
 
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: -6px; left: 0;
-            width: 30%; height: 2px;
-            background: var(--cyan);
-            box-shadow: 0 0 10px var(--cyan);
-        }
-
-        .logo-box {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sys-id { font-size: 0.8rem; color: var(--green); letter-spacing: 4px; margin-bottom: 5px; }
-        .brand { 
-            font-family: 'Michroma', sans-serif; 
-            font-size: 2.5rem; 
-            color: #fff; 
-            text-shadow: 0 0 15px var(--cyan);
-            letter-spacing: 2px;
-        }
+        /* 内容区 */
+        .container { max-width: 1400px; margin: 0 auto; padding: 120px 5vw 50px; }
         
-        .nav-sys {
-            display: flex;
-            gap: 30px;
+        /* 炫酷标题 */
+        .section-title {
+            font-family: 'Orbitron', 'Noto Sans SC', sans-serif; font-size: 2.5rem; color: #fff;
+            margin-bottom: 40px; display: flex; align-items: center; gap: 15px;
         }
+        .section-title::before { content: '>>'; color: var(--neon-pink); }
+        .section-title span { font-size: 1rem; color: var(--neon-blue); letter-spacing: 2px; opacity: 0.7; margin-left: 10px; text-transform: uppercase; }
 
-        .nav-btn {
-            background: transparent;
-            border: 1px solid var(--text-dim);
-            color: var(--text-main);
-            padding: 8px 20px;
-            font-family: 'Share Tech Mono';
-            font-size: 1rem;
-            text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
-            transition: 0.3s;
-        }
+        /* 动画类：进入视野触发 */
+        .reveal-fx { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .reveal-fx.active { opacity: 1; transform: translateY(0); }
 
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: rgba(0, 240, 255, 0.2);
-            transition: 0.3s;
-            z-index: -1;
+        /* 1. 关于我 (About Me) */
+        .about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-bottom: 100px; align-items: center; }
+        @media (max-width: 900px) { .about-section { grid-template-columns: 1fr; } }
+        .about-card {
+            background: var(--panel-bg); border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 40px; position: relative; backdrop-filter: blur(10px);
         }
+        .about-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-blue); box-shadow: var(--border-glow); }
+        .glitch-title { font-family: 'Orbitron'; font-size: 3rem; color: #fff; margin-bottom: 20px; font-weight: 900; }
+        .about-desc { font-size: 1.1rem; line-height: 1.8; color: #aaa; margin-bottom: 30px; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-tag { padding: 5px 15px; border: 1px solid var(--neon-blue); color: var(--neon-blue); font-size: 0.9rem; background: rgba(0, 242, 255, 0.05); }
 
-        .nav-btn:hover {
-            border-color: var(--cyan);
-            color: var(--cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-        }
-        .nav-btn:hover::before { left: 0; }
-        .nav-btn.active { border-color: var(--green); color: var(--green); }
+        .about-visual { height: 100%; min-height: 300px; border: 1px dashed rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; position: relative; }
+        .holo-ring { width: 200px; height: 200px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--neon-blue); border-bottom-color: var(--neon-pink); animation: spin 4s linear infinite; }
+        .holo-inner { width: 150px; height: 150px; position: absolute; border-radius: 50%; border: 1px dashed var(--neon-blue); animation: spin 8s linear infinite reverse; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ----- SECTIONS ----- */
-        .content-section {
-            display: none;
-            animation: glitchFade 0.4s ease-out forwards;
-        }
-        .content-section.active {
-            display: block;
-        }
-
-        @keyframes glitchFade {
-            0% { opacity: 0; transform: translateX(-20px) skewX(10deg); filter: hue-rotate(90deg); }
-            50% { opacity: 0.8; transform: translateX(10px) skewX(-5deg); }
-            100% { opacity: 1; transform: translateX(0) skewX(0); filter: none; }
-        }
-
-        .sec-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--cyan);
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .sec-title::before {
-            content: '>>';
-            color: var(--green);
-        }
-
-        /* --- HOME (INTRO) --- */
-        .hero-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .bio-panel {
-            background: var(--dark-panel);
-            border: 1px solid var(--border);
-            padding: 40px;
-            position: relative;
-            backdrop-filter: blur(5px);
-        }
-        .bio-panel::before {
-            content: ''; position: absolute;
-            top: -2px; left: -2px; width: 20px; height: 20px;
-            border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan);
-        }
-        .bio-panel::after {
-            content: ''; position: absolute;
-            bottom: -2px; right: -2px; width: 20px; height: 20px;
-            border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan);
-        }
-
-        .glitch-target {
-            font-family: 'Michroma', sans-serif;
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #fff;
-        }
+        /* 2. 瀑布流文档 (Masonry Docs) */
+        .docs-section { margin-bottom: 100px; }
+        .masonry-grid { column-count: 3; column-gap: 30px; }
+        @media (max-width: 1100px) { .masonry-grid { column-count: 2; } }
+        @media (max-width: 768px) { .masonry-grid { column-count: 1; } }
         
-        .bio-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--text-dim);
-            margin-bottom: 30px;
+        .doc-card {
+            break-inside: avoid; background: rgba(5, 10, 15, 0.8); border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px; margin-bottom: 30px; transition: 0.4s; position: relative; overflow: hidden;
         }
-
-        .skill-matrix {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .skill-tag {
-            padding: 5px 15px;
-            border: 1px solid var(--text-dim);
-            color: var(--cyan);
-            font-size: 0.9rem;
-            background: rgba(0,0,0,0.5);
-        }
-
-        .hud-hologram {
-            height: 400px;
-            border: 1px solid rgba(0,255,170,0.2);
-            position: relative;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,170,0.05) 3px, rgba(0,255,170,0.05) 4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .holo-core {
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            border: 2px dashed var(--green);
-            animation: spin 10s linear infinite;
-            box-shadow: 0 0 50px rgba(0, 255, 170, 0.2);
-        }
-        .holo-core-inner {
-            width: 150px; height: 150px;
-            border-radius: 50%;
-            border: 1px solid var(--cyan);
-            margin: 23px;
-            animation: spin 5s linear infinite reverse;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- DATABANKS (BLOG) --- */
-        .logs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .data-card {
-            background: rgba(5,10,15,0.6);
-            border: 1px solid var(--text-dim);
-            padding: 25px;
-            transition: 0.3s;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
+        .doc-card:hover { border-color: var(--neon-blue); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.15); }
+        .doc-card::after { content: ''; position: absolute; top: 0; right: 0; width: 30px; height: 30px; background: linear-gradient(225deg, rgba(0,242,255,0.2) 50%, transparent 50%); }
+        .doc-cat { font-size: 0.8rem; color: var(--neon-pink); font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 10px; display: block; text-transform: uppercase; }
+        .doc-title { font-size: 1.4rem; color: #fff; margin-bottom: 15px; font-weight: 700; }
+        .doc-excerpt { font-size: 0.95rem; color: #888; line-height: 1.6; margin-bottom: 20px; }
+        .doc-link { color: var(--neon-blue); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
+        .doc-link:hover { text-shadow: var(--border-glow); }
         
-        .data-card:hover {
-            border-color: var(--cyan);
-            background: rgba(0,240,255,0.05);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,240,255,0.1);
-        }
+        .view-all-btn { display: inline-block; margin-top: 20px; padding: 12px 30px; background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); text-decoration: none; font-weight: bold; transition: 0.3s; font-family: 'Orbitron', sans-serif; }
+        .view-all-btn:hover { background: var(--neon-blue); color: #000; box-shadow: var(--border-glow); }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-size: 0.8rem;
-            color: var(--green);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
-        }
+        /* 3. 开源项目 (Projects) */
+        .projects-section { margin-bottom: 100px; }
+        .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media (max-width: 900px) { .proj-grid { grid-template-columns: 1fr; } }
+        
+        .proj-card { display: flex; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; }
+        .proj-card:hover { border-color: var(--neon-purple); transform: scale(1.02); box-shadow: 0 0 20px rgba(112, 0, 255, 0.2); }
+        .proj-icon { width: 120px; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; font-size: 3rem; color: var(--neon-purple); border-right: 1px solid rgba(255,255,255,0.05); }
+        .proj-info { padding: 30px; flex-grow: 1; }
+        .proj-title { font-size: 1.5rem; color: #fff; margin-bottom: 10px; }
+        .proj-desc { color: #aaa; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+        .proj-btn { color: #fff; background: rgba(112, 0, 255, 0.2); padding: 8px 15px; text-decoration: none; font-size: 0.8rem; border: 1px solid var(--neon-purple); transition: 0.3s; }
+        .proj-btn:hover { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); }
 
-        .card-title {
-            font-family: 'Rajdhani';
-            font-size: 1.5rem;
-            color: #fff;
-            margin-bottom: 15px;
-        }
-
-        .card-desc {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            flex-grow: 1;
-            margin-bottom: 20px;
-        }
-
-        .card-action {
-            align-self: flex-start;
-            color: var(--cyan);
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card-action:hover { text-shadow: 0 0 8px var(--cyan); }
-
-        /* --- PROJECTS --- */
-        .proj-card {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            background: var(--dark-panel);
-            border-left: 4px solid var(--red);
-            margin-bottom: 30px;
-            transition: 0.3s;
-        }
-        .proj-card:hover {
-            border-left-color: var(--cyan);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
-        }
-        .proj-visual {
-            background: repeating-linear-gradient(45deg, #000, #000 10px, #111 10px, #111 20px);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-dim); font-size: 2rem;
-            border-right: 1px solid var(--border);
-            min-height: 150px;
-        }
-        .proj-info { padding: 30px; }
-        .proj-info h3 { font-family: 'Michroma'; color: #fff; margin-bottom: 10px; }
-        .proj-info p { color: var(--text-dim); margin-bottom: 20px; line-height: 1.6; }
-        .proj-links a {
-            color: var(--green); text-decoration: none; border: 1px solid var(--green);
-            padding: 5px 15px; font-size: 0.9rem; transition: 0.3s;
-        }
-        .proj-links a:hover { background: var(--green); color: #000; }
-
+        footer { text-align: center; padding: 50px 0; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Orbitron'; color: #666; }
     </style>
 </head>
 <body>
-
-    <!-- Sci-Fi Canvas BG -->
+    <!-- 3D 粒子背景 -->
     <div id="webgl-container"></div>
-    <div class="grid-overlay"></div>
-    <div class="vignette"></div>
+    <div class="cyber-grid"></div>
     <div class="scanline"></div>
 
-    <div class="hud-wrapper">
-        <header>
-            <div class="logo-box">
-                <span class="sys-id">SYS.OP: MAVI_AI // STATUS: ONLINE</span>
-                <div class="brand">MAVI_PROJECT</div>
+    <header>
+        <a href="/" class="brand">MAVI_SYS</a>
+        <nav class="nav-links">
+            <a href="/">首页</a>
+            <a href="/docs/">文档库</a>
+            <a href="/projects/">开源项目</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- 关于我 -->
+        <section class="about-section reveal-fx">
+            <div class="about-card">
+                <div style="color: var(--neon-blue); font-family: 'Orbitron'; margin-bottom: 10px; letter-spacing: 3px;">// SYSTEM.PROFILE</div>
+                <h1 class="glitch-title">计算机视觉与AI算法工程师</h1>
+                <p class="about-desc">
+                    致力于探索人工智能的前沿领域。专注于目标检测算法（YOLO系列）的研究与边缘设备（TensorRT / CUDA）的高效部署。同时涉猎大语言模型（LLM）的本地化运行与工程实践。
+                </p>
+                <div class="skill-tags">
+                    <span class="skill-tag">Python & C++</span>
+                    <span class="skill-tag">PyTorch / TensorFlow</span>
+                    <span class="skill-tag">YOLO / Object Detection</span>
+                    <span class="skill-tag">TensorRT / CUDA</span>
+                    <span class="skill-tag">LLaMA / 深度学习</span>
+                </div>
             </div>
-            <nav class="nav-sys">
-                <button class="nav-btn active" onclick="switchTab('intro')">SYS_INTRO</button>
-                <button class="nav-btn" onclick="switchTab('databanks')">DATABANKS</button>
-                <button class="nav-btn" onclick="switchTab('projects')">PROJECT_ARCHIVE</button>
-            </nav>
-        </header>
+            <div class="about-visual">
+                <div class="holo-ring"></div>
+                <div class="holo-inner"></div>
+                <div style="position: absolute; font-family: 'Orbitron'; color: var(--neon-blue); font-size: 0.8rem;">NEURAL_CORE_ACTIVE</div>
+            </div>
+        </section>
 
-        <main>
-            <!-- INTRO TAB -->
-            <section id="intro" class="content-section active">
-                <div class="hero-layout">
-                    <div class="bio-panel">
-                        <div class="sys-id">USER_PROFILE</div>
-                        <h1 class="glitch-target">COMPUTER VISION <br>& AI RESEARCHER</h1>
-                        <p class="bio-text">
-                            A digital space dedicated to exploring the frontiers of artificial intelligence. 
-                            Focusing on object detection algorithms, edge device deployment, and large language model integration.
-                            Translating theoretical papers into deployable engineering solutions.
-                        </p>
-                        <div class="skill-matrix">
-                            <span class="skill-tag">PYTHON</span>
-                            <span class="skill-tag">PYTORCH</span>
-                            <span class="skill-tag">YOLO_SERIES</span>
-                            <span class="skill-tag">TENSORRT</span>
-                            <span class="skill-tag">CUDA_C++</span>
-                            <span class="skill-tag">LLM_DEPLOY</span>
-                        </div>
-                    </div>
-                    <div class="hud-hologram">
-                        <div class="holo-core">
-                            <div class="holo-core-inner"></div>
-                        </div>
-                        <div style="position: absolute; bottom: 20px; color: var(--green); font-size: 0.8rem;">
-                            [CORE_RENDER_ACTIVE]
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <!-- 最新文档 (瀑布流) -->
+        <section class="docs-section reveal-fx">
+            <h2 class="section-title">最新文档 <span>Latest_Logs</span></h2>
+            <div class="masonry-grid" id="masonry-docs">
+                <!-- 动态注入的数据将在这里呈现 -->
+            </div>
+            <div style="text-align: center;">
+                <a href="/docs/" class="view-all-btn">进入完整文档库 [ACCESS_ALL]</a>
+            </div>
+        </section>
 
-            <!-- DATABANKS TAB (BLOG) -->
-            <section id="databanks" class="content-section">
-                <h2 class="sec-title">NEURAL_DATABANKS (ARTICLES)</h2>
-                <div class="logs-grid">
-                    {% assign all_docs = "" | split: "" %}
-                    {% for collection in site.collections %}
-                        {% if collection.label != "posts" %}
-                            {% assign all_docs = all_docs | concat: collection.docs %}
-                        {% endif %}
-                    {% endfor %}
-
-                    {% for doc in all_docs %}
-                    <article class="data-card">
-                        <div class="card-header">
-                            <span>CAT: {{ doc.category | upcase }}</span>
-                            <span>{{ doc.date | date: "%Y.%m.%d" }}</span>
-                        </div>
-                        <h3 class="card-title">{{ doc.title }}</h3>
-                        <p class="card-desc">{{ doc.content | strip_html | truncatewords: 25 }}</p>
-                        <a href="{{ doc.url }}" class="card-action">
-                            [ EXTRACT_DATA ]
-                        </a>
-                    </article>
-                    {% endfor %}
-                </div>
-            </section>
-
-            <!-- PROJECTS TAB -->
-            <section id="projects" class="content-section">
-                <h2 class="sec-title">PROJECT_ARCHIVE</h2>
-                
+        <!-- 开源项目 -->
+        <section class="projects-section reveal-fx">
+            <h2 class="section-title">开源项目 <span>Open_Source</span></h2>
+            <div class="proj-grid">
                 <div class="proj-card">
-                    <div class="proj-visual">[CV_TOOLBOX_IMG]</div>
+                    <div class="proj-icon"><i class="fas fa-microchip"></i></div>
                     <div class="proj-info">
-                        <h3>Mavi CV Toolbox</h3>
-                        <p>A comprehensive suite of computer vision utilities, dataset converters, and pre-processing scripts designed to accelerate deep learning workflows. Supports YOLO formats, COCO, and VOC parsing.</p>
-                        <div class="proj-links">
-                            <a href="https://github.com/MaviProject" target="_blank">GITHUB_REPO</a>
-                        </div>
+                        <h3 class="proj-title">CV_Toolbox 工具箱</h3>
+                        <p class="proj-desc">包含常用计算机视觉数据预处理、格式转换（COCO/VOC/YOLO）以及图像增强的 Python 脚本集合，提升炼丹效率。</p>
+                        <a href="https://github.com/MaviProject" target="_blank" class="proj-btn"><i class="fab fa-github"></i> GITHUB 仓库</a>
                     </div>
                 </div>
-
                 <div class="proj-card">
-                    <div class="proj-visual" style="border-left-color: var(--cyan);">[DETECTION_LAB_IMG]</div>
+                    <div class="proj-icon" style="color: var(--neon-blue); border-right-color: rgba(0,242,255,0.2);"><i class="fas fa-eye"></i></div>
                     <div class="proj-info">
-                        <h3>Detection Lab</h3>
-                        <p>End-to-end training and deployment pipelines for object detection models. Featuring TensorRT optimization scripts for edge devices (Jetson Nano/Orin) and custom NMS implementations.</p>
-                        <div class="proj-links">
-                            <a href="https://github.com/MaviProject" target="_blank">GITHUB_REPO</a>
-                        </div>
+                        <h3 class="proj-title">Detection_Lab 部署库</h3>
+                        <p class="proj-desc">YOLO 系列模型在 Jetson 等边缘端设备上的 TensorRT 加速部署方案，包含自定义 NMS 算子与 C++ 推理代码。</p>
+                        <a href="https://github.com/MaviProject" target="_blank" class="proj-btn" style="background: rgba(0,242,255,0.1); border-color: var(--neon-blue); color: var(--neon-blue);"><i class="fab fa-github"></i> GITHUB 仓库</a>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
     </div>
 
-    <!-- UI Logic -->
-    <script>
-        function switchTab(tabId) {
-            // Update buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+    <footer>
+        © 2026 MAVI_PROJECT | BUILT WITH NEURAL INTERFACE UI
+    </footer>
 
-            // Update sections
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            
-            // Re-trigger animation
-            const target = document.getElementById(tabId);
-            target.style.animation = 'none';
-            target.offsetHeight; // trigger reflow
-            target.style.animation = null;
-            target.classList.add('active');
-        }
+    <!-- 数据注入引擎 (安全获取 Jekyll Markdown 文件) -->
+    <script>
+        const rawArticles = [
+            {% assign is_first = true %}
+            {% for p in site.pages %}
+                {% if p.layout == 'post' or p.category %}
+                    {% if is_first == false %},{% endif %}
+                    {
+                        title: {{ p.title | default: '未命名文档' | jsonify }},
+                        category: {{ p.category | default: '未分类' | jsonify }},
+                        excerpt: {{ p.content | strip_html | truncate: 100 | jsonify }},
+                        link: {{ p.url | relative_url | jsonify }},
+                        date: {{ p.date | date: '%Y-%m-%d' | jsonify }}
+                    }
+                    {% assign is_first = false %}
+                {% endif %}
+            {% endfor %}
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('masonry-docs');
+            if(rawArticles.length > 0) {
+                // 取最新的 6 篇文章展示在首页
+                const displayDocs = rawArticles.slice(0, 6);
+                grid.innerHTML = displayDocs.map(doc => `
+                    <article class="doc-card">
+                        <span class="doc-cat">${doc.category}</span>
+                        <h3 class="doc-title">${doc.title}</h3>
+                        <p class="doc-excerpt">${doc.excerpt}</p>
+                        <a href="${doc.link}" class="doc-link">开始阅读 <i class="fas fa-arrow-right"></i></a>
+                    </article>
+                `).join('');
+            } else {
+                grid.innerHTML = `<div style="color:var(--neon-pink); padding: 20px; font-family:'Orbitron';">NO_DATA_LOGS_FOUND_IN_SYSTEM_PAGES</div>`;
+            }
+
+            // 滚动显现动画 (Intersection Observer)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal-fx').forEach(el => observer.observe(el));
+        });
     </script>
 
-    <!-- Three.js Background Logic -->
+    <!-- Three.js 动态背景 -->
     <script>
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x030305, 0.002);
-        
+        scene.fog = new THREE.FogExp2(0x030508, 0.0015);
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
         camera.position.z = 200;
-        camera.position.y = 50;
-        camera.lookAt(0,0,0);
-
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('webgl-container').appendChild(renderer.domElement);
 
-        // Particle system
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
-        const sizes = [];
-        for (let i = 0; i < 3000; i++) {
+        for (let i = 0; i < 2000; i++) {
             vertices.push(
-                THREE.MathUtils.randFloatSpread(1000), // x
-                THREE.MathUtils.randFloatSpread(500),  // y
-                THREE.MathUtils.randFloatSpread(1000)  // z
+                THREE.MathUtils.randFloatSpread(1000),
+                THREE.MathUtils.randFloatSpread(800),
+                THREE.MathUtils.randFloatSpread(1000)
             );
         }
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
         
-        // Simple circular particle texture
         const canvas = document.createElement('canvas');
         canvas.width = 16; canvas.height = 16;
         const ctx = canvas.getContext('2d');
-        ctx.beginPath();
-        ctx.arc(8, 8, 8, 0, Math.PI * 2);
-        ctx.fillStyle = '#00f0ff';
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(8, 8, 8, 0, Math.PI * 2);
+        ctx.fillStyle = '#00f2ff'; ctx.fill();
         const texture = new THREE.CanvasTexture(canvas);
 
         const material = new THREE.PointsMaterial({ 
-            size: 2, 
-            map: texture,
-            transparent: true,
-            opacity: 0.6,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false
+            size: 2.5, map: texture, transparent: true, opacity: 0.7, 
+            blending: THREE.AdditiveBlending, depthWrite: false 
         });
-        
         const particles = new THREE.Points(geometry, material);
         scene.add(particles);
 
-        // Mouse interaction
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - windowHalfX) * 0.05;
-            mouseY = (event.clientY - windowHalfY) * 0.05;
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth/2) * 0.05;
+            mouseY = (e.clientY - window.innerHeight/2) * 0.05;
         });
 
         function animate() {
             requestAnimationFrame(animate);
-
-            targetX = mouseX * 0.5;
-            targetY = mouseY * 0.5;
-            
-            particles.rotation.y += 0.001;
-            particles.rotation.x += 0.0005;
-
+            particles.rotation.y += 0.0005;
             camera.position.x += (mouseX - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY - camera.position.y) * 0.05 + 0.2; // slow drift up
-            if(camera.position.y > 100) camera.position.y = 50; // reset drift
-            
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
-
             renderer.render(scene, camera);
         }
         animate();
-
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();

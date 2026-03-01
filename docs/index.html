@@ -1,0 +1,38 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档库 // MAVI_SYS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #030508; color: #fff; font-family: 'Noto Sans SC', sans-serif; padding: 50px; }
+        .back-link { color: #00f2ff; text-decoration: none; font-family: 'Orbitron'; letter-spacing: 2px; display: inline-block; margin-bottom: 40px; }
+        .title { font-size: 2.5rem; margin-bottom: 50px; font-family: 'Orbitron'; color: #00f2ff; text-shadow: 0 0 15px rgba(0, 242, 255, 0.5); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+        .card { background: rgba(10, 15, 25, 0.8); border: 1px solid rgba(0, 242, 255, 0.3); padding: 30px; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.2); border-color: #00f2ff; }
+        .cat { color: #ff007a; font-size: 0.8rem; text-transform: uppercase; font-family: 'Orbitron'; margin-bottom: 10px; display: block; }
+        .link { color: #00f2ff; text-decoration: none; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; display: block; }
+        .desc { color: #888; font-size: 0.9rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link"><< RETURN_TO_BASE</a>
+    <h1 class="title">DATABANKS_ARCHIVE</h1>
+    <div class="grid">
+        {% for p in site.pages %}
+            {% if p.layout == 'post' or p.category %}
+            <div class="card">
+                <span class="cat">{{ p.category | default: "UNCATEGORIZED" }}</span>
+                <a href="{{ p.url }}" class="link">{{ p.title | default: "Unnamed Log" }}</a>
+                <p class="desc">{{ p.content | strip_html | truncate: 80 }}</p>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>

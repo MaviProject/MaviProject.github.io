@@ -1,0 +1,40 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开源项目 // MAVI_SYS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #030508; color: #fff; font-family: 'Noto Sans SC', sans-serif; padding: 50px; }
+        .back-link { color: #7000ff; text-decoration: none; font-family: 'Orbitron'; letter-spacing: 2px; display: inline-block; margin-bottom: 40px; }
+        .title { font-size: 2.5rem; margin-bottom: 50px; font-family: 'Orbitron'; color: #7000ff; text-shadow: 0 0 15px rgba(112, 0, 255, 0.5); }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 900px; margin: 0 auto; }
+        .card { background: rgba(10, 15, 25, 0.8); border-left: 4px solid #7000ff; padding: 40px; transition: 0.3s; }
+        .card:hover { transform: translateX(10px); background: rgba(112, 0, 255, 0.05); }
+        .name { color: #fff; font-size: 1.8rem; font-weight: bold; margin-bottom: 20px; }
+        .desc { color: #aaa; font-size: 1rem; line-height: 1.8; margin-bottom: 30px; }
+        .github { display: inline-block; padding: 10px 25px; border: 1px solid #7000ff; color: #7000ff; text-decoration: none; font-family: 'Orbitron'; transition: 0.3s; }
+        .github:hover { background: #7000ff; color: #000; box-shadow: 0 0 15px #7000ff; }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link"><< RETURN_TO_BASE</a>
+    <h1 class="title">PROJECTS_ARCHIVE</h1>
+    <div class="grid">
+        <div class="card">
+            <div class="name">CV_Toolbox</div>
+            <p class="desc">包含常用计算机视觉数据预处理、格式转换（COCO/VOC/YOLO）以及图像增强的 Python 脚本集合，提升炼丹效率。支持多种主流数据集的快速清洗与打标。</p>
+            <a href="https://github.com/MaviProject" class="github">GITHUB_REPO</a>
+        </div>
+        <div class="card" style="border-left-color: #00f2ff;">
+            <div class="name">Detection_Lab</div>
+            <p class="desc">YOLO 系列模型在 Jetson 等边缘端设备上的 TensorRT 加速部署方案，包含自定义 NMS 算子与 C++ 推理代码。提供从 PyTorch 到 ONNX 再到 Engine 的完整转换流。</p>
+            <a href="https://github.com/MaviProject" class="github" style="border-color: #00f2ff; color: #00f2ff;">GITHUB_REPO</a>
+        </div>
+    </div>
+</body>
+</html>
