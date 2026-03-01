@@ -1,120 +1,775 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN">
 <head>
-    <!-- Meta, title, CSS, favicons, etc. -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Dmego Home">
-    <meta name="keywords" content="Orvillex,Homepage">
-    <meta name="author" content="Orvillex">
-    <title>Orvillex Home</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/dmego-home-page@latest/assets/css/onlinewebfonts.css"/>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/dmego-home-page@latest/assets/css/vno.css">
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/dmego-home-page@latest/assets/css/iconfont.css">
-    <link rel="apple-touch-icon" href="https://unpkg.com/dmego-home-page@latest/apple-touch-icon.png">
-    <link rel="icon" href="https://unpkg.com/dmego-home-page@latest/favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技术大杂烩 | 计算机视觉与AI技术博客</title>
+    <meta name="description" content="专注于计算机视觉、目标检测、大语言模型的技术博客与知识分享">
+    
+    <!-- 字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    
+    <!-- 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;      /* 科技蓝紫 */
+            --primary-dark: #4f46e5;
+            --secondary: #06b6d4;    /* 科技青 */
+            --dark: #0f172a;         /* 深空蓝黑 */
+            --dark-light: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-light: #e2e8f0;
+            
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 20%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部导航 */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--light);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            padding: 160px 0 80px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--light), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .hero-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .badge {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .badge:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* 瀑布流网格 */
+        .masonry-section {
+            padding: 40px 0 80px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .masonry-grid {
+            column-count: 3;
+            column-gap: 30px;
+        }
+        
+        @media (max-width: 1100px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .masonry-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        
+        .card-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .card-content {
+            padding: 1.8rem;
+        }
+        
+        .card-category {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .card-excerpt {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .card-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+        
+        .card-link:hover {
+            color: var(--primary);
+            gap: 10px;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: var(--dark-light);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-desc {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+        
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--glass);
+            border-radius: 50%;
+            color: var(--gray);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        /* 响应式 */
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .card-content {
+                padding: 1.2rem;
+            }
+        }
+        
+        /* 动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
 </head>
-
 <body>
-    <span class="mobile btn-mobile-menu">
-        <i class="social iconfont icon-list btn-mobile-menu__icon"></i>
-        <i class="social iconfont icon-angleup btn-mobile-close__icon hidden"></i>
-    </span>
-    <header id="panel" class="panel-cover">
-        <div class="panel-main">
-            <div class="panel-main__inner panel-inverted">
-                <div class="panel-main__content">
-                    <div class="ih-item circle effect right_to_left">            
-                        <a href="#" title="" class="blog-button">
-                            <div class="img"><img src="/assets/image/logo.jpg" alt="img" class="js-avatar iUp profilepic"></div>
-                            <div class="info iUp">
-                                <div class="info-back">
-                                    <h2> 
-                                        
-                                            Go Go Go
-                                        
-                                    </h2>
-                                    <p>
-                                        
-                                            2023 · 展现
-                                        
-                                    </p>
-                                </div>
-                            </div>
-                        </a>
+    <!-- 头部导航 -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                <span>Tech Nexus</span>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#home">首页</a>
+                <a href="#articles">文章</a>
+                <a href="/About">关于</a>
+                <a href="/Guess">随想</a>
+                <a href="https://github.com/MaviProject" target="_blank">GitHub</a>
+            </nav>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1 class="animate-fadeInUp">探索技术前沿</h1>
+            <p class="animate-fadeInUp" style="animation-delay: 0.2s">
+                专注于计算机视觉、目标检测、大语言模型的技术博客。记录学习过程，分享实践心得，构建知识体系。
+            </p>
+            
+            <div class="hero-badges animate-fadeInUp" style="animation-delay: 0.4s">
+                <div class="badge">
+                    <i class="fas fa-robot"></i>
+                    <span>计算机视觉</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-eye"></i>
+                    <span>目标检测</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-brain"></i>
+                    <span>深度学习</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-code"></i>
+                    <span>算法实现</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-language"></i>
+                    <span>大语言模型</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 瀑布流文章网格 -->
+    <section class="masonry-section" id="articles">
+        <div class="container">
+            <h2 class="section-title">最新文章</h2>
+            
+            <div class="masonry-grid" id="articleGrid">
+                <!-- 文章卡片将通过JavaScript动态加载 -->
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-crosshairs"></i>
                     </div>
-                    <h1 class="panel-cover__title panel-title iUp">
-                        <a href="#" title="Orvillex Home">Orvillex</a>
-                    </h1>
-                    <p class="panel-cover__subtitle panel-subtitle iUp">AI Change World</p>
-                    <hr class="panel-cover__divider iUp" />
-                    <p id="description" class="panel-cover__description iUp">哦，要进画里了，孩子们，走好
-                        <br/>
-                        <strong>-「二维化-逻辑」</strong>
-                    </p>
-                    <div class="navigation-wrapper iUp">
-                        <div>
-                            <nav class="cover-navigation cover-navigation--primary">
-                                <ul class="navigation">
-                                    <li class="navigation__item">
-                                        <a href="/" class="blog-button">首页</a>
-                                    </li>
-                                    <li class="navigation__item">
-                                        <a href="https://github.com/OrvilleX/orvillex.github.io" class="blog-button" target="_blank">痕迹</a>
-                                    </li>
-                                    <li class="navigation__item">
-                                        <a href="/Guess" class="blog-button" target="_blank">乱编</a>
-                                    </li>
-                                    <li class="navigation__item">
-                                        <a href="/About" class="blog-button" target="_blank">关于</a>
-                                    </li>
-                                </ul>
-                            </nav>
+                    <div class="card-content">
+                        <div class="card-category">目标检测</div>
+                        <h3 class="card-title">目标检测基础知识</h3>
+                        <p class="card-excerpt">
+                            介绍目标检测领域的常用术语、准确率、精确率、召回率等基础概念，帮助理解模型评估指标。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 8分钟</span>
+                            <a href="/detection/Basic" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
-                        <div class="iUp">
-                            <nav class="cover-navigation navigation--social">
-                                <ul class="navigation">
-                                    <li class="navigation__item">
-                                        <a href="https://github.com/orvillex" title="github" target="_blank">
-                                            <i class='social iconfont icon-github'></i>
-                                            <span class="label">github</span>
-                                        </a>
-                                    </li>
-                                    <li class="navigation__item">
-                                        <a href="https://www.yuque.com/guduxiaosheng/" title="cnblogs" target="_blank">
-                                            <i class='social iconfont icon-cnblogs'></i>
-                                            <span class="label">yuque</span>
-                                        </a>
-                                    </li>
-                                    <li class="navigation__item">
-                                        <a href="https://www.zhihu.com/people/huan-zhi-guang-43" title="zhihu" target="_blank">
-                                            <i class='social iconfont icon-zhihu'></i>
-                                            <span class="label">zhihu</span>
-                                        </a>
-                                    </li>
-                                    <li class="navigation__item">
-                                        <a href="yaozhenfa110@gmail.com" title="email">
-                                            <i class='social iconfont icon-email'></i>
-                                            <span class="label">email</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
+                    </div>
+                </div>
+                
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">目标检测</div>
+                        <h3 class="card-title">IOU损失函数</h3>
+                        <p class="card-excerpt">
+                            深入解析IoU、GIoU、DIoU、CIoU等边界框回归损失函数，对比各自优缺点及实现方式。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 12分钟</span>
+                            <a href="/detection/IOU" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-filter"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">目标检测</div>
+                        <h3 class="card-title">非极大值抑制(NMS)</h3>
+                        <p class="card-excerpt">
+                            详细介绍NMS算法原理、传统实现方法及其在目标检测中的应用，解决重复检测框问题。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 10分钟</span>
+                            <a href="/detection/NMS" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">YOLO学习</div>
+                        <h3 class="card-title">YOLOv5在Ubuntu环境搭建</h3>
+                        <p class="card-excerpt">
+                            从系统环境配置、显卡驱动安装到YOLOv5项目部署，详细记录Ubuntu下的完整搭建流程。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 15分钟</span>
+                            <a href="/yolo/install" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">YOLO学习</div>
+                        <h3 class="card-title">输入图像尺寸对训练的影响</h3>
+                        <p class="card-excerpt">
+                            分析输入图像尺寸如何影响YOLOv5模型的感受野、全局与局部信息提取，以及训练效果。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 10分钟</span>
+                            <a href="/yolo/input_size" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">YOLO学习</div>
+                        <h3 class="card-title">YOLOv5深度剖析</h3>
+                        <p class="card-excerpt">
+                            深入解析YOLOv5的评估方式、混淆矩阵、PR曲线等核心概念，帮助全面理解模型性能。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 18分钟</span>
+                            <a href="/yolo/yolov5_depth" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item">
+                    <div class="card-image">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">大语言模型</div>
+                        <h3 class="card-title">Llama-2安装运行</h3>
+                        <p class="card-excerpt">
+                            指导如何在低显存环境下运行Llama-2，结合Llama.cpp实现模型权重下载与本地部署。
+                        </p>
+                        <div class="card-meta">
+                            <span>阅读时间: 20分钟</span>
+                            <a href="/llama/install" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel-cover--overlay cover-slate"></div>
         </div>
-        <div class="remark iUp">
-            <p class="power">Powered By 
-                <a href="https://github.com/features/actions" target="_blank"> GitHub Actions </a> And 
-            </p>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-cube"></i>
+                        <span>Tech Nexus</span>
+                    </div>
+                    <p class="footer-desc">
+                        一个专注于计算机视觉与AI技术的个人博客。记录学习历程，分享技术实践，构建知识体系。
+                    </p>
+                    <div class="social-links">
+                        <a href="https://github.com/MaviProject" target="_blank" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="#home">首页</a></li>
+                        <li><a href="#articles">所有文章</a></li>
+                        <li><a href="/About">关于我</a></li>
+                        <li><a href="/Guess">随想杂谈</a></li>
+                        <li><a href="https://github.com/MaviProject/MaviProject.github.io" target="_blank">项目源码</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>技术分类</h3>
+                    <ul>
+                        <li><a href="#">计算机视觉</a></li>
+                        <li><a href="#">目标检测</a></li>
+                        <li><a href="#">深度学习</a></li>
+                        <li><a href="#">大语言模型</a></li>
+                        <li><a href="#">算法实现</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023-2024 Tech Nexus. 本博客内容采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>许可协议</p>
+                <p>Powered by GitHub Pages & Jekyll | 主题设计: 科技未来风格</p>
+            </div>
         </div>
-    </header>
-    <script type="text/javascript" src="https://unpkg.com/dmego-home-page@latest/assets/js/main.js"></script>
-    <script type="text/javascript" src="./assets/json/images.json?cb=getBingImages"></script>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+        
+        // 页面滚动时头部效果
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(15, 23, 42, 0.95)';
+                header.style.backdropFilter = 'blur(15px)';
+            } else {
+                header.style.background = 'var(--glass)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+        
+        // 卡片悬停效果增强
+        document.querySelectorAll('.masonry-item').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.card-image i');
+                if (icon) {
+                    icon.style.transform = 'scale(1.2)';
+                    icon.style.transition = 'transform 0.3s ease';
+                }
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.card-image i');
+                if (icon) {
+                    icon.style.transform = 'scale(1)';
+                }
+            });
+        });
+        
+        // 简单的滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeInUp');
+                }
+            });
+        }, observerOptions);
+        
+        // 观察所有卡片
+        document.querySelectorAll('.masonry-item').forEach(item => {
+            observer.observe(item);
+        });
+        
+        console.log('Tech Nexus 博客已加载 - 探索技术前沿');
+    </script>
 </body>
 </html>
