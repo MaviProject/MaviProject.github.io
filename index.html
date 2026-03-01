@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>技术大杂烩 | 计算机视觉与AI技术博客</title>
-    <meta name="description" content="专注于计算机视觉、目标检测、大语言模型的技术博客与知识分享">
+    <title>MaviProject | 技术博客 - 计算机视觉与AI</title>
+    <meta name="description" content="MaviProject技术博客，专注于计算机视觉、目标检测、大语言模型的技术分享与实践">
     
     <!-- 字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,16 +16,19 @@
     
     <style>
         :root {
-            --primary: #6366f1;      /* 科技蓝紫 */
-            --primary-dark: #4f46e5;
-            --secondary: #06b6d4;    /* 科技青 */
-            --dark: #0f172a;         /* 深空蓝黑 */
+            /* 渐变主题色 */
+            --gradient-1: #6366f1;
+            --gradient-2: #8b5cf6;
+            --gradient-3: #d946ef;
+            --gradient-4: #06b6d4;
+            
+            --dark: #0f172a;
             --dark-light: #1e293b;
             --light: #f8fafc;
             --gray: #94a3b8;
             --gray-light: #e2e8f0;
             
-            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-bg: rgba(30, 41, 59, 0.8);
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             
@@ -48,8 +51,9 @@
             line-height: 1.6;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 20%);
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.1) 0%, transparent 30%);
             min-height: 100vh;
         }
         
@@ -65,7 +69,7 @@
             top: 0;
             width: 100%;
             background: var(--glass);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
             z-index: 1000;
             padding: 1rem 0;
@@ -78,24 +82,33 @@
         }
         
         .logo {
-            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--glass-border);
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-3));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            font-size: 2rem;
         }
         
         .nav-links {
             display: flex;
             gap: 2rem;
+            align-items: center;
         }
         
         .nav-links a {
@@ -117,7 +130,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--primary);
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-3));
             transition: var(--transition);
         }
         
@@ -134,79 +147,91 @@
             cursor: pointer;
         }
         
-        /* 英雄区域 */
-        .hero {
-            padding: 160px 0 80px;
-            text-align: center;
+        /* 搜索栏 */
+        .search-container {
+            margin: 120px auto 40px;
+            max-width: 700px;
             position: relative;
         }
         
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(90deg, var(--light), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.2;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--gray);
-            max-width: 700px;
-            margin: 0 auto 2rem;
-        }
-        
-        .hero-badges {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-        
-        .badge {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            padding: 0.5rem 1.2rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--gray-light);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .search-box {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+            background: var(--card-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            color: var(--light);
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(10px);
             transition: var(--transition);
         }
         
-        .badge:hover {
-            background: var(--primary);
+        .search-box:focus {
+            outline: none;
+            border-color: var(--gradient-1);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 1.2rem;
+        }
+        
+        /* 标签云 */
+        .tags-section {
+            margin: 3rem auto;
+            max-width: 1000px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--gradient-1);
+        }
+        
+        .tags-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .tag {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
             color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .tag:hover {
             transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        
+        .tag.tag-secondary {
+            background: linear-gradient(135deg, var(--gradient-3), var(--gradient-4));
         }
         
         /* 瀑布流网格 */
         .masonry-section {
-            padding: 40px 0 80px;
-        }
-        
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 2.5rem;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 2px;
+            padding: 40px 0 60px;
         }
         
         .masonry-grid {
@@ -239,40 +264,40 @@
         }
         
         .masonry-item:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
+            border-color: var(--gradient-1);
         }
         
         .card-image {
-            height: 200px;
+            height: 180px;
             width: 100%;
             object-fit: cover;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-3));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 3rem;
+            font-size: 2.5rem;
         }
         
         .card-content {
-            padding: 1.8rem;
+            padding: 1.5rem;
         }
         
         .card-category {
             display: inline-block;
             background: rgba(99, 102, 241, 0.2);
-            color: var(--primary);
+            color: var(--gradient-1);
             padding: 0.3rem 0.8rem;
             border-radius: 50px;
             font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
         
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 0.8rem;
             line-height: 1.4;
@@ -281,7 +306,7 @@
         .card-excerpt {
             color: var(--gray);
             font-size: 0.95rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             line-height: 1.6;
         }
         
@@ -294,7 +319,7 @@
         }
         
         .card-link {
-            color: var(--secondary);
+            color: var(--gradient-4);
             text-decoration: none;
             font-weight: 500;
             display: inline-flex;
@@ -304,8 +329,75 @@
         }
         
         .card-link:hover {
-            color: var(--primary);
-            gap: 10px;
+            color: var(--gradient-1);
+            gap: 8px;
+        }
+        
+        /* 项目展示 */
+        .projects-section {
+            padding: 60px 0;
+            background: rgba(15, 23, 42, 0.5);
+            margin: 40px 0;
+            border-radius: 20px;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.8rem;
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gradient-2);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .project-icon {
+            font-size: 2rem;
+            color: var(--gradient-1);
+            margin-bottom: 1rem;
+        }
+        
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        
+        .project-desc {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+        
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .project-link {
+            color: var(--gradient-4);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+        
+        .project-link:hover {
+            color: var(--gradient-1);
         }
         
         /* 页脚 */
@@ -328,21 +420,77 @@
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--dark-light);
+                flex-direction: column;
+                padding: 1rem;
+                border-top: 1px solid var(--glass-border);
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
         }
         
         .footer-logo {
-            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid var(--glass-border);
+        }
+        
+        .footer-logo-text {
+            font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: linear-gradient(90deg, var(--gradient-1), var(--gradient-3));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 1rem;
         }
         
         .footer-desc {
             color: var(--gray);
             line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--glass);
+            border-radius: 50%;
+            color: var(--gray);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .social-link:hover {
+            background: var(--gradient-1);
+            color: white;
+            transform: translateY(-3px);
         }
         
         .footer-links h3 {
@@ -366,33 +514,8 @@
         }
         
         .footer-links a:hover {
-            color: var(--primary);
+            color: var(--gradient-1);
             padding-left: 5px;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: var(--glass);
-            border-radius: 50%;
-            color: var(--gray);
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
-        
-        .social-links a:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
         }
         
         .copyright {
@@ -403,33 +526,48 @@
             border-top: 1px solid var(--glass-border);
         }
         
-        /* 响应式 */
-        @media (max-width: 992px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .hero h1 {
-                font-size: 2.5rem;
-            }
+        /* 搜索结果显示 */
+        #searchResults {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: var(--dark-light);
+            border-radius: 0 0 15px 15px;
+            border: 1px solid var(--glass-border);
+            border-top: none;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
         }
         
-        @media (max-width: 576px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .card-content {
-                padding: 1.2rem;
-            }
+        .search-result-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .search-result-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .search-result-title {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            color: var(--light);
+        }
+        
+        .search-result-excerpt {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .no-results {
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--gray);
         }
         
         /* 动画 */
@@ -453,17 +591,19 @@
     <!-- 头部导航 -->
     <header>
         <div class="container nav-container">
-            <div class="logo">
-                <i class="fas fa-cube"></i>
-                <span>Tech Nexus</span>
-            </div>
+            <a href="/" class="logo">
+                <img src="/assets/image/org-avatar.png" alt="MaviProject Logo" class="logo-img">
+                <span class="logo-text">MaviProject</span>
+            </a>
             
             <nav class="nav-links">
-                <a href="#home">首页</a>
                 <a href="#articles">文章</a>
+                <a href="#projects">项目</a>
                 <a href="/About">关于</a>
                 <a href="/Guess">随想</a>
-                <a href="https://github.com/MaviProject" target="_blank">GitHub</a>
+                <a href="https://github.com/MaviProject" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </nav>
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -472,185 +612,50 @@
         </div>
     </header>
 
-    <!-- 英雄区域 -->
-    <section class="hero" id="home">
-        <div class="container">
-            <h1 class="animate-fadeInUp">探索技术前沿</h1>
-            <p class="animate-fadeInUp" style="animation-delay: 0.2s">
-                专注于计算机视觉、目标检测、大语言模型的技术博客。记录学习过程，分享实践心得，构建知识体系。
-            </p>
-            
-            <div class="hero-badges animate-fadeInUp" style="animation-delay: 0.4s">
-                <div class="badge">
-                    <i class="fas fa-robot"></i>
-                    <span>计算机视觉</span>
-                </div>
-                <div class="badge">
-                    <i class="fas fa-eye"></i>
-                    <span>目标检测</span>
-                </div>
-                <div class="badge">
-                    <i class="fas fa-brain"></i>
-                    <span>深度学习</span>
-                </div>
-                <div class="badge">
-                    <i class="fas fa-code"></i>
-                    <span>算法实现</span>
-                </div>
-                <div class="badge">
-                    <i class="fas fa-language"></i>
-                    <span>大语言模型</span>
-                </div>
-            </div>
+    <!-- 搜索栏 -->
+    <div class="container search-container">
+        <div class="search-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-box" placeholder="搜索文章、技术关键词...">
+            <div id="searchResults" class="search-results"></div>
         </div>
-    </section>
+    </div>
+
+    <!-- 标签云 -->
+    <div class="container tags-section">
+        <h2 class="section-title">
+            <i class="fas fa-tags"></i>
+            热门标签
+        </h2>
+        <div class="tags-cloud" id="tagsCloud">
+            <!-- 标签将通过JavaScript动态生成 -->
+        </div>
+    </div>
 
     <!-- 瀑布流文章网格 -->
     <section class="masonry-section" id="articles">
         <div class="container">
-            <h2 class="section-title">最新文章</h2>
+            <h2 class="section-title" style="margin-left: 0;">
+                <i class="fas fa-newspaper"></i>
+                最新文章
+            </h2>
             
             <div class="masonry-grid" id="articleGrid">
                 <!-- 文章卡片将通过JavaScript动态加载 -->
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-crosshairs"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">目标检测</div>
-                        <h3 class="card-title">目标检测基础知识</h3>
-                        <p class="card-excerpt">
-                            介绍目标检测领域的常用术语、准确率、精确率、召回率等基础概念，帮助理解模型评估指标。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 8分钟</span>
-                            <a href="/detection/Basic" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">目标检测</div>
-                        <h3 class="card-title">IOU损失函数</h3>
-                        <p class="card-excerpt">
-                            深入解析IoU、GIoU、DIoU、CIoU等边界框回归损失函数，对比各自优缺点及实现方式。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 12分钟</span>
-                            <a href="/detection/IOU" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-filter"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">目标检测</div>
-                        <h3 class="card-title">非极大值抑制(NMS)</h3>
-                        <p class="card-excerpt">
-                            详细介绍NMS算法原理、传统实现方法及其在目标检测中的应用，解决重复检测框问题。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 10分钟</span>
-                            <a href="/detection/NMS" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">YOLO学习</div>
-                        <h3 class="card-title">YOLOv5在Ubuntu环境搭建</h3>
-                        <p class="card-excerpt">
-                            从系统环境配置、显卡驱动安装到YOLOv5项目部署，详细记录Ubuntu下的完整搭建流程。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 15分钟</span>
-                            <a href="/yolo/install" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-expand-alt"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">YOLO学习</div>
-                        <h3 class="card-title">输入图像尺寸对训练的影响</h3>
-                        <p class="card-excerpt">
-                            分析输入图像尺寸如何影响YOLOv5模型的感受野、全局与局部信息提取，以及训练效果。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 10分钟</span>
-                            <a href="/yolo/input_size" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">YOLO学习</div>
-                        <h3 class="card-title">YOLOv5深度剖析</h3>
-                        <p class="card-excerpt">
-                            深入解析YOLOv5的评估方式、混淆矩阵、PR曲线等核心概念，帮助全面理解模型性能。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 18分钟</span>
-                            <a href="/yolo/yolov5_depth" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="masonry-item">
-                    <div class="card-image">
-                        <i class="fas fa-comment"></i>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-category">大语言模型</div>
-                        <h3 class="card-title">Llama-2安装运行</h3>
-                        <p class="card-excerpt">
-                            指导如何在低显存环境下运行Llama-2，结合Llama.cpp实现模型权重下载与本地部署。
-                        </p>
-                        <div class="card-meta">
-                            <span>阅读时间: 20分钟</span>
-                            <a href="/llama/install" class="card-link">
-                                阅读全文
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目展示 -->
+    <section class="projects-section" id="projects">
+        <div class="container">
+            <h2 class="section-title" style="margin-left: 0;">
+                <i class="fas fa-code-branch"></i>
+                开源项目
+            </h2>
+            
+            <div class="projects-grid" id="projectsGrid">
+                <!-- 项目卡片将通过JavaScript动态加载 -->
             </div>
         </div>
     </section>
@@ -661,23 +666,21 @@
             <div class="footer-content">
                 <div class="footer-about">
                     <div class="footer-logo">
-                        <i class="fas fa-cube"></i>
-                        <span>Tech Nexus</span>
+                        <img src="/assets/image/org-avatar.png" alt="MaviProject Logo" class="footer-logo-img">
+                        <span class="footer-logo-text">MaviProject</span>
                     </div>
                     <p class="footer-desc">
-                        一个专注于计算机视觉与AI技术的个人博客。记录学习历程，分享技术实践，构建知识体系。
+                        一个专注于计算机视觉、目标检测与大语言模型的技术博客。
+                        记录学习历程，分享技术实践，构建开源项目。
                     </p>
                     <div class="social-links">
-                        <a href="https://github.com/MaviProject" target="_blank" title="GitHub">
+                        <a href="https://github.com/MaviProject" class="social-link" target="_blank" title="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="#" title="Twitter">
-                            <i class="fab fa-twitter"></i>
+                        <a href="#" class="social-link" title="RSS订阅">
+                            <i class="fas fa-rss"></i>
                         </a>
-                        <a href="#" title="LinkedIn">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a href="#" title="Email">
+                        <a href="mailto:" class="social-link" title="电子邮件">
                             <i class="fas fa-envelope"></i>
                         </a>
                     </div>
@@ -686,90 +689,351 @@
                 <div class="footer-links">
                     <h3>快速链接</h3>
                     <ul>
-                        <li><a href="#home">首页</a></li>
                         <li><a href="#articles">所有文章</a></li>
-                        <li><a href="/About">关于我</a></li>
-                        <li><a href="/Guess">随想杂谈</a></li>
-                        <li><a href="https://github.com/MaviProject/MaviProject.github.io" target="_blank">项目源码</a></li>
+                        <li><a href="#projects">开源项目</a></li>
+                        <li><a href="/About">关于作者</a></li>
+                        <li><a href="/Guess">技术随想</a></li>
+                        <li><a href="https://github.com/MaviProject/MaviProject.github.io" target="_blank">博客源码</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-links">
                     <h3>技术分类</h3>
                     <ul>
-                        <li><a href="#">计算机视觉</a></li>
-                        <li><a href="#">目标检测</a></li>
-                        <li><a href="#">深度学习</a></li>
-                        <li><a href="#">大语言模型</a></li>
-                        <li><a href="#">算法实现</a></li>
+                        <li><a href="#tag-目标检测">目标检测</a></li>
+                        <li><a href="#tag-YOLO">YOLO系列</a></li>
+                        <li><a href="#tag-深度学习">深度学习</a></li>
+                        <li><a href="#tag-大语言模型">大语言模型</a></li>
+                        <li><a href="#tag-算法">算法实现</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2023-2024 Tech Nexus. 本博客内容采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>许可协议</p>
-                <p>Powered by GitHub Pages & Jekyll | 主题设计: 科技未来风格</p>
+                <p>&copy; 2023-2024 MaviProject. 本博客内容采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" style="color: var(--gradient-4);"> CC BY-NC-SA 4.0</a>许可协议</p>
+                <p>Powered by GitHub Pages & Jekyll | 主题设计: 科技渐变风格</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // 移动端菜单切换
-        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-        });
-        
-        // 页面滚动时头部效果
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.style.background = 'rgba(15, 23, 42, 0.95)';
-                header.style.backdropFilter = 'blur(15px)';
-            } else {
-                header.style.background = 'var(--glass)';
-                header.style.backdropFilter = 'blur(10px)';
+        // 文章数据
+        const articles = [
+            {
+                id: 1,
+                title: "目标检测基础知识",
+                category: "目标检测",
+                excerpt: "介绍目标检测领域的常用术语、准确率、精确率、召回率等基础概念，帮助理解模型评估指标。",
+                readTime: "8分钟",
+                link: "/detection/Basic",
+                icon: "fas fa-crosshairs",
+                tags: ["目标检测", "基础知识", "评估指标"]
+            },
+            {
+                id: 2,
+                title: "IOU损失函数",
+                category: "目标检测",
+                excerpt: "深入解析IoU、GIoU、DIoU、CIoU等边界框回归损失函数，对比各自优缺点及实现方式。",
+                readTime: "12分钟",
+                link: "/detection/IOU",
+                icon: "fas fa-search",
+                tags: ["目标检测", "损失函数", "IoU", "算法"]
+            },
+            {
+                id: 3,
+                title: "非极大值抑制(NMS)",
+                category: "目标检测",
+                excerpt: "详细介绍NMS算法原理、传统实现方法及其在目标检测中的应用，解决重复检测框问题。",
+                readTime: "10分钟",
+                link: "/detection/NMS",
+                icon: "fas fa-filter",
+                tags: ["目标检测", "NMS", "算法", "后处理"]
+            },
+            {
+                id: 4,
+                title: "YOLOv5在Ubuntu环境搭建",
+                category: "YOLO学习",
+                excerpt: "从系统环境配置、显卡驱动安装到YOLOv5项目部署，详细记录Ubuntu下的完整搭建流程。",
+                readTime: "15分钟",
+                link: "/yolo/install",
+                icon: "fas fa-camera",
+                tags: ["YOLO", "环境搭建", "Ubuntu", "深度学习"]
+            },
+            {
+                id: 5,
+                title: "输入图像尺寸对训练的影响",
+                category: "YOLO学习",
+                excerpt: "分析输入图像尺寸如何影响YOLOv5模型的感受野、全局与局部信息提取，以及训练效果。",
+                readTime: "10分钟",
+                link: "/yolo/input_size",
+                icon: "fas fa-expand-alt",
+                tags: ["YOLO", "图像处理", "训练技巧", "深度学习"]
+            },
+            {
+                id: 6,
+                title: "YOLOv5深度剖析",
+                category: "YOLO学习",
+                excerpt: "深入解析YOLOv5的评估方式、混淆矩阵、PR曲线等核心概念，帮助全面理解模型性能。",
+                readTime: "18分钟",
+                link: "/yolo/yolov5_depth",
+                icon: "fas fa-layer-group",
+                tags: ["YOLO", "模型评估", "混淆矩阵", "深度学习"]
+            },
+            {
+                id: 7,
+                title: "Llama-2安装运行",
+                category: "大语言模型",
+                excerpt: "指导如何在低显存环境下运行Llama-2，结合Llama.cpp实现模型权重下载与本地部署。",
+                readTime: "20分钟",
+                link: "/llama/install",
+                icon: "fas fa-comment",
+                tags: ["Llama-2", "大语言模型", "部署", "低显存"]
             }
+        ];
+
+        // 项目数据
+        const projects = [
+            {
+                title: "MaviProject 技术博客",
+                description: "当前博客的源代码，使用GitHub Pages和Jekyll构建，包含完整的技术文章和项目文档。",
+                icon: "fas fa-blog",
+                github: "https://github.com/MaviProject/MaviProject.github.io",
+                tags: ["Jekyll", "GitHub Pages", "博客", "文档"]
+            },
+            {
+                title: "计算机视觉工具箱",
+                description: "收集常用的计算机视觉工具函数、预处理脚本和模型部署示例，提高开发效率。",
+                icon: "fas fa-tools",
+                github: "https://github.com/MaviProject",
+                tags: ["计算机视觉", "工具库", "Python", "OpenCV"]
+            },
+            {
+                title: "目标检测实践",
+                description: "YOLO系列模型的训练、优化和部署实践，包含完整的数据集处理和模型评估流程。",
+                icon: "fas fa-eye",
+                github: "https://github.com/MaviProject",
+                tags: ["YOLO", "目标检测", "深度学习", "PyTorch"]
+            }
+        ];
+
+        // 标签数据
+        const tags = [
+            { name: "目标检测", count: 12 },
+            { name: "YOLO", count: 8 },
+            { name: "深度学习", count: 15 },
+            { name: "计算机视觉", count: 10 },
+            { name: "大语言模型", count: 5 },
+            { name: "Python", count: 18 },
+            { name: "算法", count: 9 },
+            { name: "部署", count: 7 },
+            { name: "Ubuntu", count: 4 },
+            { name: "Jekyll", count: 3 },
+            { name: "GitHub Pages", count: 3 },
+            { name: "训练技巧", count: 6 }
+        ];
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderArticles();
+            renderProjects();
+            renderTags();
+            setupSearch();
+            setupMobileMenu();
+            setupScrollEffects();
         });
-        
-        // 卡片悬停效果增强
-        document.querySelectorAll('.masonry-item').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                const icon = this.querySelector('.card-image i');
-                if (icon) {
-                    icon.style.transform = 'scale(1.2)';
-                    icon.style.transition = 'transform 0.3s ease';
+
+        // 渲染文章卡片
+        function renderArticles() {
+            const grid = document.getElementById('articleGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = articles.map(article => `
+                <div class="masonry-item animate-fadeInUp">
+                    <div class="card-image">
+                        <i class="${article.icon}"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-category">${article.category}</div>
+                        <h3 class="card-title">${article.title}</h3>
+                        <p class="card-excerpt">${article.excerpt}</p>
+                        <div class="card-meta">
+                            <span>阅读时间: ${article.readTime}</span>
+                            <a href="${article.link}" class="card-link">
+                                阅读全文
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染项目卡片
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = projects.map(project => `
+                <div class="project-card animate-fadeInUp">
+                    <div class="project-icon">
+                        <i class="${project.icon}"></i>
+                    </div>
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-desc">${project.description}</p>
+                    <div class="project-links">
+                        <a href="${project.github}" class="project-link" target="_blank">
+                            <i class="fab fa-github"></i>
+                            查看源码
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染标签云
+        function renderTags() {
+            const cloud = document.getElementById('tagsCloud');
+            if (!cloud) return;
+            
+            // 按数量排序并取前10个
+            const sortedTags = [...tags].sort((a, b) => b.count - a.count).slice(0, 10);
+            
+            cloud.innerHTML = sortedTags.map((tag, index) => `
+                <button class="tag ${index % 2 === 0 ? '' : 'tag-secondary'}" 
+                        onclick="filterByTag('${tag.name}')"
+                        data-tag="${tag.name}">
+                    ${tag.name}
+                    <span style="font-size: 0.8em; opacity: 0.8;">(${tag.count})</span>
+                </button>
+            `).join('');
+        }
+
+        // 标签过滤
+        function filterByTag(tagName) {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = tagName;
+            performSearch();
+        }
+
+        // 搜索功能
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+            
+            if (!searchInput || !searchResults) return;
+            
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(performSearch, 300);
+            });
+            
+            searchInput.addEventListener('focus', function() {
+                if (this.value.trim()) {
+                    performSearch();
                 }
             });
             
-            card.addEventListener('mouseleave', function() {
-                const icon = this.querySelector('.card-image i');
-                if (icon) {
-                    icon.style.transform = 'scale(1)';
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
                 }
             });
-        });
-        
-        // 简单的滚动动画
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fadeInUp');
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const searchResults = document.getElementById('searchResults');
+            
+            if (!query) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            // 搜索文章
+            const results = articles.filter(article => 
+                article.title.toLowerCase().includes(query) ||
+                article.excerpt.toLowerCase().includes(query) ||
+                article.tags.some(tag => tag.toLowerCase().includes(query)) ||
+                article.category.toLowerCase().includes(query)
+            );
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">未找到相关文章</div>';
+            } else {
+                searchResults.innerHTML = results.map(article => `
+                    <div class="search-result-item" onclick="window.location.href='${article.link}'">
+                        <div class="search-result-title">${article.title}</div>
+                        <div class="search-result-excerpt">${article.excerpt}</div>
+                        <div style="font-size: 0.8rem; color: var(--gradient-1); margin-top: 0.3rem;">
+                            ${article.category} · ${article.readTime}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            searchResults.style.display = 'block';
+        }
+
+        // 移动端菜单
+        function setupMobileMenu() {
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (menuBtn && navLinks) {
+                menuBtn.addEventListener('click', function() {
+                    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+                });
+                
+                // 点击菜单项后关闭菜单
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 768) {
+                            navLinks.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        }
+
+        // 滚动效果
+        function setupScrollEffects() {
+            const header = document.querySelector('header');
+            
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.style.background = 'rgba(15, 23, 42, 0.95)';
+                    header.style.backdropFilter = 'blur(20px)';
+                } else {
+                    header.style.background = 'var(--glass)';
+                    header.style.backdropFilter = 'blur(15px)';
                 }
             });
-        }, observerOptions);
-        
-        // 观察所有卡片
-        document.querySelectorAll('.masonry-item').forEach(item => {
-            observer.observe(item);
-        });
-        
-        console.log('Tech Nexus 博客已加载 - 探索技术前沿');
+            
+            // 滚动动画
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeInUp');
+                    }
+                });
+            }, observerOptions);
+            
+            // 观察所有卡片
+            document.querySelectorAll('.masonry-item, .project-card').forEach(item => {
+                observer.observe(item);
+            });
+        }
+
+        // 控制台欢迎信息
+        console.log('%c🚀 MaviProject 技术博客已加载', 'color: #6366f1; font-size: 16px; font-weight: bold;');
+        console.log('%c探索计算机视觉与AI技术前沿', 'color: #06b6d4;');
     </script>
 </body>
 </html>
