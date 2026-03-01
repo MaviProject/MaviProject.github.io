@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "CV_DETECTION_CORE"
-category: DETECTION
+category: detection
 tags: [BASICS, THEORY]
 date: 2026-03-01
 ---

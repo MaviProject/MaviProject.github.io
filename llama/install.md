@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "LLAMA_2_NEURAL_DEPLOY"
-category: LLM
+category: llama
 tags: [LLAMA, AI, DEPLOY]
 date: 2026-03-01
 ---

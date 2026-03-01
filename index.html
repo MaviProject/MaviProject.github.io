@@ -192,20 +192,24 @@ layout: null
 
     <script>
         // 1. 数据注入 (Jekyll Liquid)
+        // 强制使用全局 site.documents 或集合明确合并
         const articles = [
+            {% assign all_docs = "" | split: "" %}
             {% for collection in site.collections %}
-              {% if collection.label != "posts" %}
-                {% for doc in collection.docs %}
-                {
-                    title: "{{ doc.title | escape }}",
-                    category: "{{ doc.category | escape }}",
-                    excerpt: "{{ doc.content | strip_html | truncate: 120 | escape }}",
-                    link: "{{ doc.url }}",
-                    tags: {{ doc.tags | jsonify }},
-                    date: "{{ doc.date | date: '%Y/%m/%d' }}"
-                }{% unless forloop.last and forloop.parentloop.last %},{% endunless %}
-                {% endfor %}
-              {% endif %}
+                {% if collection.label != "posts" %}
+                    {% assign all_docs = all_docs | concat: collection.docs %}
+                {% endif %}
+            {% endfor %}
+            
+            {% for doc in all_docs %}
+            {
+                title: "{{ doc.title | escape }}",
+                category: "{{ doc.category | escape }}",
+                excerpt: "{{ doc.content | strip_html | truncate: 120 | escape }}",
+                link: "{{ doc.url }}",
+                tags: {{ doc.tags | jsonify }},
+                date: "{{ doc.date | date: '%Y/%m/%d' }}"
+            }{% unless forloop.last %},{% endunless %}
             {% endfor %}
         ];
 
@@ -222,7 +226,16 @@ layout: null
         // 2. 渲染引擎
         function renderArticles(data) {
             const grid = document.getElementById('articleGrid');
-            document.getElementById('recordCount').innerText = data.length.toString().padStart(2, '0');
+            const countEl = document.getElementById('recordCount');
+            if(countEl) countEl.innerText = data.length.toString().padStart(2, '0');
+            
+            if (!grid) return;
+            
+            if (data.length === 0) {
+                grid.innerHTML = '<div style="color:rgba(255,255,255,0.2); padding:50px;">NO_DATA_LOGS_FOUND_IN_SYSTEM</div>';
+                return;
+            }
+
             grid.innerHTML = data.map(a => `
                 <article class="article-card">
                     <span class="card-cat">${a.category}</span>
@@ -237,57 +250,65 @@ layout: null
         }
 
         function renderTech() {
-            document.getElementById('techLine').innerHTML = techStack.map(t => `
-                <div class="tech-node">
-                    <i class="${t.icon} tech-icon"></i>
-                    <span class="tech-name">${t.name}</span>
-                </div>
-            `).join('');
+            const el = document.getElementById('techLine');
+            if(el) {
+                el.innerHTML = techStack.map(t => `
+                    <div class="tech-node">
+                        <i class="${t.icon} tech-icon"></i>
+                        <span class="tech-name">${t.name}</span>
+                    </div>
+                `).join('');
+            }
         }
 
         // 3. 搜索系统
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
-            const filtered = articles.filter(a => 
-                a.title.toLowerCase().includes(q) || 
-                a.category.toLowerCase().includes(q) ||
-                a.tags.some(t => t.toLowerCase().includes(q))
-            );
-            renderArticles(filtered);
-        });
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase();
+                const filtered = articles.filter(a => 
+                    a.title.toLowerCase().includes(q) || 
+                    a.category.toLowerCase().includes(q) ||
+                    (a.tags && a.tags.some(t => t.toLowerCase().includes(q)))
+                );
+                renderArticles(filtered);
+            });
+        }
 
         // 4. 科幻背景 Canvas
         const canvas = document.getElementById('space');
-        const ctx = canvas.getContext('2d');
-        let dots = [];
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            dots = Array.from({length: 100}, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5
-            }));
-        }
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(0, 242, 255, 0.3)";
-            dots.forEach(d => {
-                d.x += d.vx; d.y += d.vy;
-                if(d.x < 0 || d.x > canvas.width) d.vx *= -1;
-                if(d.y < 0 || d.y > canvas.height) d.vy *= -1;
-                ctx.beginPath();
-                ctx.arc(d.x, d.y, 1, 0, Math.PI*2);
-                ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', initCanvas);
-        document.addEventListener('DOMContentLoaded', () => {
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let dots = [];
+            function initCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                dots = Array.from({length: 100}, () => ({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5
+                }));
+            }
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(0, 242, 255, 0.3)";
+                dots.forEach(d => {
+                    d.x += d.vx; d.y += d.vy;
+                    if(d.x < 0 || d.x > canvas.width) d.vx *= -1;
+                    if(d.y < 0 || d.y > canvas.height) d.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, 1, 0, Math.PI*2);
+                    ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            window.addEventListener('resize', initCanvas);
             initCanvas();
             animate();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             renderTech();
             renderArticles(articles);
         });
