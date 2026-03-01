@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    
+    <!-- 使用首页的样式 -->
+    <style>
+        {{ site.styles | default: '' }}
+    </style>
+</head>
+<body>
+    <div style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+        <h1>{{ page.title }}</h1>
+        {{ content }}
+        
+        <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #ccc;">
+            <a href="/">返回首页</a>
+        </div>
+    </div>
+</body>
+</html>

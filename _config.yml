@@ -5,15 +5,32 @@ description: "计算机视觉与AI技术博客"
 baseurl: ""  # root deployment
 url: "https://maviproject.github.io"
 
+# 禁用所有主题和插件
+theme: null
+plugins: []
+
 # Build settings
 markdown: kramdown
 permalink: pretty
+highlighter: rouge
 
-# Exclude files from processing
-exclude:
-  - README.md
+# 不处理任何文件
+include: []
+exclude: 
+  - READMe.md
   - .gitignore
+  - assets/
+  - _layouts/
+  - _plugins/
+  - generate_feed.sh
+  - setup-giscus.md
+  - index.html
 
-# Plugin support (minimal for GitHub Pages)
-plugins:
-  - jekyll-feed
+# 最小化处理
+safe: true
+lsi: false
+incremental: false
+
+# 输出设置
+future: true
+unpublished: false
