@@ -11,7 +11,7 @@ Non-Maximum Suppression（NMS）非极大值抑制。从字面意思理解，抑
 
 ### 单一分类逻辑
 
-![单分类NMS](/assets/image/nms_one.png)
+![单分类NMS](/orvillex.github.io/assets/image/nms_one.png)
 
 1.「确定是物体集合」= {空集合}  
 2. Run 1: 先将BBox依照置信度排序，置信度最高的BBox (红色) 会被选入「确定是物体集合」內，其他BBox会根据这步骤选出最高的BBox进行IoU计算，如果粉红色的IoU为0.6大于我们设定的0.5，所以将粉红色的BBox置信度设置为0。
@@ -23,7 +23,7 @@ Non-Maximum Suppression（NMS）非极大值抑制。从字面意思理解，抑
 
 ### 多分类逻辑
 
-![多分类NMS](/assets/image/nms_two.png)
+![多分类NMS](/orvillex.github.io/assets/image/nms_two.png)
 
 前面的范例一是标准的NMS程序，这边要搭配一下分类来看，范例二和标准NMS做法一样，先将「确定是物件集合」选出来，此例是NMS选出的BBox是{紫色BBox ; 红色BBox}。
 

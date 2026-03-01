@@ -1,9 +1,9 @@
-# GitHub Pages Jekyll configuration
+# GitHub Pages Jekyll configuration for project site
 
 title: "技术大杂烩"
 description: "计算机视觉与AI技术博客"
-baseurl: ""
-url: "https://orvillex.github.io"
+baseurl: "/orvillex.github.io"  # repository name
+url: "https://maviproject.github.io"
 
 # Build settings
 markdown: kramdown
@@ -14,3 +14,7 @@ exclude:
   - README.md
   - .gitignore
   - assets/
+
+# Plugin support (minimal for GitHub Pages)
+plugins:
+  - jekyll-feed

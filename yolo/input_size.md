@@ -27,18 +27,18 @@ YoloV5的Baseline并没有采⽤位置感知的可变形卷积，它每个卷积
 
 通过上述几个指标所计算的正确率以及召回率公式。
 
-![8](/assets/image/8.jpg)
+![8](/orvillex.github.io/assets/image/8.jpg)
 
 ### F1&F2指标
 
 单靠正确率以及召回率并不能很好的反应模型的实际识别效果，为此我们需要引入其他更科学的
 指标来对模型的整体识别效果进行评估，首先在Yolov5中默认具备的是F1指标。F1指标权衡了正确率和召回率。假设正确率和召回率之和的值相对稳定，正确率和召回率任⼀个值偏⼩时，整体得到的F1分数会变得偏⼩，只有两者尽可能接近时才能得到⽐较可观的F1分数。
 
-![F1](/assets/image/F1.jpg)
+![F1](/orvillex.github.io/assets/image/F1.jpg)
 
 FP对分⺟的贡献⽐FN⼤，这意味着，增加相同的FP值和FN值时，同样的FP值计算出来的F2 分数⽐同样的FN值计算出来的F2分数⼤。这就意味着，可以瞎猜，猜错⽐猜不出来得到的F2分数⼤。
 
-![F2](/assets/image/F2.jpg)
+![F2](/orvillex.github.io/assets/image/F2.jpg)
 
 
 ## 参考链接

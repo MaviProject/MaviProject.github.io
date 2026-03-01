@@ -5,7 +5,7 @@
 ### 1.1 显卡驱动安装
 
 通过自带的Software & Updates工具通过如下界面进行驱动安装。
-![驱动](/assets/image/2.jpg)
+![驱动](/orvillex.github.io/assets/image/2.jpg)
 安装完成后重启，然后通过nvidia-smi查看是否安装成功。
 
 ### 1.2 CUDA安装
@@ -139,7 +139,7 @@ python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source data/images
 由于yolov5模型自4.0版本开始激活函数已经从LeakyReLU调整为SiLU，这将导致在使用新版后模型在地平线芯片上实际执行的效能无法满足15ms，为此我们需要调整models/common.py文件中对应位置的函数，下述根据不同版本进行介绍具体修改位置。
 
 * v6.0-v5.0-v4.0版本
-![3](/assets/image/3.jpg)
+![3](/orvillex.github.io/assets/image/3.jpg)
 
 此处调整为如下代码
 
@@ -148,7 +148,7 @@ self.act = nn.LeakyReLU(0.1, inplace=True) if act is True else (act if isinstanc
 ```
 
 * v6.1-v6.2版本
-![4](/assets/image/4.jpg)
+![4](/orvillex.github.io/assets/image/4.jpg)
 
 此处调整为如下代码
 
@@ -156,7 +156,7 @@ self.act = nn.LeakyReLU(0.1, inplace=True) if act is True else (act if isinstanc
 self.act = nn.LeakyReLU(0.1, inplace=True) if act is True else (act if isinstance(act, nn.Module) else nn.Identity())
 ```
 
-![5](/assets/image/5.jpg)
+![5](/orvillex.github.io/assets/image/5.jpg)
 
 此处调整为如下代码
 ```python
@@ -181,7 +181,7 @@ python train.py --img 640 --batch-size 16 --epochs 100 --cfg models/yolov5s.yaml
 ### 3.4 模型选择
 根据平台所具备的算力需要选择合适的模型满足具体的需求，比如基于地平线芯片且输出二阶段识别则推荐使用yolov5n进行训练并且输入的图片尺寸建议使用256或128输入。仅针对部分单阶段的模型采用yolov5s进行训练，具体的对应的模型以及运算复杂程度如下图。
 
-![6](/assets/image/6.jpg)
+![6](/orvillex.github.io/assets/image/6.jpg)
 
 ### 3.5 模型验证
 针对已完成训练的模型，如果希望通过其他外部图片或视频进行验证可以使用以下方式进行验证。
@@ -304,7 +304,7 @@ python val2yolo.py /path/to/original/widerface/val
 `注意：其中val2yolo.py需要调整第64行与78行代码，其自行增加了val文件夹，将其删除。`
 
 ### 5.2 移植适配
-![7](/assets/image/7.jpg)
+![7](/orvillex.github.io/assets/image/7.jpg)
 打开对应的common.py文件，将其中第43行注释后修改为第44行代码即可。
 
 ### 5.3 模型训练
