@@ -87,6 +87,24 @@ layout: null
         .reveal-fx { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal-fx.active { opacity: 1; transform: translateY(0); }
 
+        
+        /* 3D 标签球样式 */
+        .tagcloud {
+            font-family: 'Orbitron', 'Noto Sans SC', sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+            margin: 0 auto;
+            cursor: pointer;
+        }
+        .tagcloud--item:hover {
+            color: var(--neon-pink);
+            text-shadow: 0 0 15px rgba(255, 0, 122, 0.8);
+            transform: scale(1.2);
+            transition: all 0.2s;
+        }
+
         /* 1. 关于我 (About Me) */
         .about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-bottom: 100px; align-items: center; }
         @media (max-width: 900px) { .about-section { grid-template-columns: 1fr; } }
@@ -142,6 +160,7 @@ layout: null
 
         footer { text-align: center; padding: 50px 0; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Orbitron'; color: #666; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
 </head>
 <body>
     <!-- 3D 粒子背景 -->
@@ -175,10 +194,12 @@ layout: null
                     <span class="skill-tag">LLaMA / 深度学习</span>
                 </div>
             </div>
-            <div class="about-visual">
-                <div class="holo-ring"></div>
-                <div class="holo-inner"></div>
-                <div style="position: absolute; font-family: 'Orbitron'; color: var(--neon-blue); font-size: 0.8rem;">NEURAL_CORE_ACTIVE</div>
+            
+            <div class="about-visual" id="tech-sphere" style="border: none; position: relative;">
+                <!-- 3D 标签球将被注入到这里 -->
+                <div style="position: absolute; bottom: 10px; font-family: 'Orbitron'; color: rgba(0,242,255,0.4); font-size: 0.7rem; text-align: center; width: 100%;">
+                    [ INTERACTIVE_MATRIX_NODE ]
+                </div>
             </div>
         </section>
 
@@ -325,6 +346,32 @@ layout: null
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+    <!-- 3D 标签球逻辑 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = '#tech-sphere';
+            const texts = [
+                'PyTorch', 'TensorRT', 'YOLOv5', 'YOLOv8', 
+                'CUDA', 'C++', 'Python', 'OpenCV',
+                'Deep Learning', 'LLaMA', 'ONNX', 
+                'NMS', 'Docker', 'Jetson Orin', 'Computer Vision'
+            ];
+            const options = {
+                radius: 160,
+                maxSpeed: 'fast',
+                initSpeed: 'normal',
+                direction: 135,
+                keep: true
+            };
+            
+            // 确保容器存在并清空可能存在的旧内容
+            const el = document.querySelector(container);
+            if (el) {
+                TagCloud(container, texts, options);
+            }
         });
     </script>
 </body>
