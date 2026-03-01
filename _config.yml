@@ -1,8 +1,8 @@
-# GitHub Pages Jekyll configuration for project site
+# GitHub Pages Jekyll configuration for root site
 
 title: "技术大杂烩"
 description: "计算机视觉与AI技术博客"
-baseurl: "/orvillex.github.io"  # repository name
+baseurl: ""  # root deployment
 url: "https://maviproject.github.io"
 
 # Build settings
