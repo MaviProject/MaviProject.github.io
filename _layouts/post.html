@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} | MaviProject 技术博客</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <!-- 导航栏 -->
+    </header>
+    
+    <main class="container post-container">
+        <article class="post-content">
+            <h1>{{ page.title }}</h1>
+            <div class="post-meta">
+                <span><i class="far fa-calendar"></i> {{ page.date | date: "%Y年%m月%d日" }}</span>
+                <span><i class="far fa-clock"></i> 阅读时间: {{ content | reading_time }}分钟</span>
+                <span><i class="fas fa-tags"></i> {{ page.tags | join: ", " }}</span>
+            </div>
+            
+            <div class="post-body">
+                {{ content }}
+            </div>
+            
+            <!-- 评论区域 -->
+            <div class="comments-section">
+                <h2><i class="far fa-comments"></i> 评论</h2>
+                <div class="giscus-container">
+                    <!-- Giscus 评论系统将在这里加载 -->
+                    <p style="text-align: center; color: #666; padding: 2rem;">
+                        <i class="fas fa-comment-slash"></i><br>
+                        评论系统配置中...
+                    </p>
+                </div>
+            </div>
+        </article>
+    </main>
+    
+    <footer>
+        <!-- 页脚 -->
+    </footer>
+</body>
+</html>

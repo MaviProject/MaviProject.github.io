@@ -400,6 +400,168 @@
             color: var(--gradient-1);
         }
         
+        
+        /* 技术栈展示 */
+        .tech-stack-section {
+            padding: 60px 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.9));
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+        
+        .tech-category {
+            margin-bottom: 2.5rem;
+        }
+        
+        .category-title {
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .tech-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+        }
+        
+        .tech-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .tech-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gradient-2);
+            box-shadow: var(--shadow);
+        }
+        
+        .tech-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .tech-name {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+        
+        .skill-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--dark-light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: auto;
+        }
+        
+        .skill-level {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1.5s ease;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 576px) {
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            
+            .logo-img {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .search-box {
+                padding: 1rem 1.2rem 1rem 3rem;
+                font-size: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .masonry-item, .project-card {
+                margin-bottom: 20px;
+            }
+            
+            .card-content, .project-card {
+                padding: 1.2rem;
+            }
+            
+            .footer-content {
+                gap: 1.5rem;
+            }
+        }
+        
+        /* 触摸设备优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .masonry-item:hover, .project-card:hover, .tech-item:hover {
+                transform: none;
+            }
+            
+            .nav-links a::after, .footer-links a:hover {
+                display: none;
+            }
+        }
+        
+        /* 评论系统 */
+        .comments-section {
+            padding: 60px 0;
+            margin-top: 40px;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .giscus-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+        
+        /* RSS订阅按钮 */
+        .rss-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--gradient-3), var(--gradient-4));
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+        
+        .rss-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(217, 70, 239, 0.4);
+        }
+
+
         /* 页脚 */
         footer {
             background: var(--dark-light);
@@ -660,6 +822,33 @@
         </div>
     </section>
 
+
+    <!-- 技术栈展示 -->
+    <section class="tech-stack-section" id="tech-stack">
+        <div class="container">
+            <h2 class="section-title" style="margin-left: 0;">
+                <i class="fas fa-layer-group"></i>
+                技术栈与技能
+            </h2>
+            
+            <div id="techStackContainer">
+                <!-- 技术栈将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- RSS订阅 -->
+    <div class="container" style="text-align: center; padding: 40px 0;">
+        <a href="/feed.xml" class="rss-button">
+            <i class="fas fa-rss"></i>
+            订阅RSS Feed
+        </a>
+        <p style="color: var(--gray); margin-top: 1rem; font-size: 0.9rem;">
+            获取最新文章更新
+        </p>
+    </div>
+
+
     <!-- 页脚 -->
     <footer>
         <div class="container">
@@ -791,6 +980,50 @@
             }
         ];
 
+        // 技术栈数据
+        const techStack = [
+    {
+        category: "编程语言",
+        items: [
+            { name: "Python", level: 90, icon: "fab fa-python", color: "#3776AB" },
+            { name: "C++", level: 75, icon: "fas fa-cogs", color: "#00599C" },
+            { name: "JavaScript", level: 80, icon: "fab fa-js-square", color: "#F7DF1E" },
+            { name: "TypeScript", level: 70, icon: "fab fa-js-square", color: "#3178C6" },
+            { name: "Bash/Shell", level: 85, icon: "fas fa-terminal", color: "#4EAA25" }
+        ]
+    },
+    {
+        category: "深度学习框架",
+        items: [
+            { name: "PyTorch", level: 85, icon: "fas fa-brain", color: "#EE4C2C" },
+            { name: "TensorFlow", level: 70, icon: "fas fa-project-diagram", color: "#FF6F00" },
+            { name: "YOLO系列", level: 90, icon: "fas fa-eye", color: "#00A86B" },
+            { name: "OpenCV", level: 80, icon: "fas fa-camera", color: "#5C3EE8" },
+            { name: "Transformers", level: 75, icon: "fas fa-language", color: "#FFD700" }
+        ]
+    },
+    {
+        category: "开发工具",
+        items: [
+            { name: "Git", level: 90, icon: "fab fa-git-alt", color: "#F1502F" },
+            { name: "Docker", level: 75, icon: "fab fa-docker", color: "#2496ED" },
+            { name: "Linux/Ubuntu", level: 85, icon: "fab fa-linux", color: "#FCC624" },
+            { name: "VS Code", level: 95, icon: "fas fa-code", color: "#007ACC" },
+            { name: "Jupyter", level: 80, icon: "fas fa-book", color: "#F37626" }
+        ]
+    },
+    {
+        category: "云服务与部署",
+        items: [
+            { name: "GitHub Pages", level: 85, icon: "fab fa-github", color: "#181717" },
+            { name: "Jekyll", level: 70, icon: "fas fa-blog", color: "#CC0000" },
+            { name: "TensorRT", level: 65, icon: "fas fa-rocket", color: "#76B900" },
+            { name: "AutoDL", level: 60, icon: "fas fa-cloud", color: "#4285F4" },
+            { name: "CUDA", level: 75, icon: "fas fa-microchip", color: "#76B900" }
+        ]
+    }
+];
+
         // 项目数据
         const projects = [
             {
@@ -837,6 +1070,7 @@
             renderArticles();
             renderProjects();
             renderTags();
+            renderTechStack();
             setupSearch();
             setupMobileMenu();
             setupScrollEffects();
@@ -1030,6 +1264,27 @@
                 observer.observe(item);
             });
         }
+
+        
+        // 触摸设备优化
+        function isTouchDevice() {
+            return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        }
+        
+        if (isTouchDevice()) {
+            document.body.classList.add('touch-device');
+            // 移除hover效果可能带来的问题
+            const style = document.createElement('style');
+            style.textContent = \`
+                @media (hover: hover) {
+                    .masonry-item:hover, .project-card:hover, .tech-item:hover {
+                        transform: translateY(-5px);
+                    }
+                }
+            \`;
+            document.head.appendChild(style);
+        }
+
 
         // 控制台欢迎信息
         console.log('%c🚀 MaviProject 技术博客已加载', 'color: #6366f1; font-size: 16px; font-weight: bold;');
