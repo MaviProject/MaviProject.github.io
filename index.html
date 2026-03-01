@@ -842,6 +842,7 @@ layout: null
             </a>
             
             
+            
             <nav class="nav-links">
                 <div class="nav-dropdown">
                     <a href="#articles" class="nav-item">文章 <i class="fas fa-chevron-down"></i></a>
@@ -854,7 +855,6 @@ layout: null
                 <div class="nav-dropdown">
                     <a href="#projects" class="nav-item">项目 <i class="fas fa-chevron-down"></i></a>
                     <div class="dropdown-content">
-                        <a href="https://github.com/MaviProject/MaviProject.github.io" target="_blank">博客源码</a>
                         <a href="https://github.com/MaviProject" target="_blank">CV 工具箱</a>
                         <a href="https://github.com/MaviProject" target="_blank">目标检测实践</a>
                     </div>
@@ -862,6 +862,7 @@ layout: null
                 <a href="/About/">关于</a>
                 <a href="/Guess/">随想</a>
             </nav>
+
 
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -1074,13 +1075,6 @@ layout: null
         // 项目数据
         const projects = [
             {
-                title: "MaviProject 技术博客",
-                description: "当前博客的源代码，使用GitHub Pages和Jekyll构建，包含完整的技术文章和项目文档。",
-                icon: "fas fa-blog",
-                github: "https://github.com/MaviProject/MaviProject.github.io",
-                tags: ["Jekyll", "GitHub Pages", "博客", "文档"]
-            },
-            {
                 title: "计算机视觉工具箱",
                 description: "收集常用的计算机视觉工具函数、预处理脚本和模型部署示例，提高开发效率。",
                 icon: "fas fa-tools",
@@ -1186,6 +1180,31 @@ layout: null
                     ${tag.name}
                     <span style="font-size: 0.8em; opacity: 0.8;">(${tag.count})</span>
                 </button>
+            `).join('');
+        }
+
+        
+        function renderTechStack() {
+            const container = document.getElementById('techStackContainer');
+            if (!container) return;
+            
+            container.innerHTML = techStack.map(category => `
+                <div class="tech-category">
+                    <h3 class="tech-category-title">${category.category}</h3>
+                    <div class="tech-items">
+                        ${category.items.map(item => `
+                            <div class="tech-item">
+                                <div class="tech-info">
+                                    <span class="tech-name"><i class="${item.icon}"></i> ${item.name}</span>
+                                    <span class="tech-percentage">${item.level}%</span>
+                                </div>
+                                <div class="skill-bar-bg">
+                                    <div class="skill-bar-fill" style="width: ${item.level}%; background-color: ${item.color}"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             `).join('');
         }
 
