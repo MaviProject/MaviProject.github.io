@@ -6,193 +6,266 @@ layout: null
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAVI PROJECT | NEURAL INTERFACE</title>
+    <title>MAVI_NEURAL_INTERFACE | V2.5</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-cyan: #00f2ff;
+            --neon-blue: #00f2ff;
             --neon-purple: #7000ff;
             --neon-pink: #ff007a;
-            --deep-space: #050505;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-glow: 0 0 10px rgba(0, 242, 255, 0.5);
+            --matrix-green: #00ff41;
+            --deep-black: #030303;
+            --panel-bg: rgba(5, 5, 10, 0.8);
+            --border-glow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
         body {
-            background-color: var(--deep-space);
-            color: #ffffff;
-            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--deep-black);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(112, 0, 255, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 242, 255, 0.1) 0%, transparent 40%);
+            height: 100vh;
+            width: 100vw;
         }
 
-        /* 科幻背景粒子感 */
-        canvas#space { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.5; }
+        /* -----------------------------------------
+           极致科幻背景：Three.js 风格动态网格 + 扫描线
+        ----------------------------------------- */
+        #canvas-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
+        }
+        .scanline {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 242, 255, 0.02) 50%);
+            background-size: 100% 4px; z-index: 1000; pointer-events: none; opacity: 0.3;
+        }
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, black 150%);
+            z-index: 999; pointer-events: none;
+        }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
+        /* -----------------------------------------
+           HUD 布局：全屏数字界面
+        ----------------------------------------- */
+        .hud-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: grid;
+            grid-template-areas: 
+                "tl top tr"
+                "lt main rt"
+                "bl bot br";
+            grid-template-columns: 80px 1fr 80px;
+            grid-template-rows: 80px 1fr 80px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .hud-corner { border: 2px solid var(--neon-blue); width: 30px; height: 30px; pointer-events: none; }
+        .hud-tl { grid-area: tl; border-right: none; border-bottom: none; margin: 20px; }
+        .hud-tr { grid-area: tr; border-left: none; border-bottom: none; margin: 20px; justify-self: end; }
+        .hud-bl { grid-area: bl; border-right: none; border-top: none; margin: 20px; align-self: end; }
+        .hud-br { grid-area: br; border-left: none; border-top: none; margin: 20px; align-self: end; justify-self: end; }
 
-        /* 极简科幻导航 */
+        /* -----------------------------------------
+           内容区域：滚动视口
+        ----------------------------------------- */
+        .viewport {
+            position: relative; width: 100%; height: 100vh; overflow-y: auto;
+            scroll-behavior: smooth; z-index: 5; padding: 100px 120px;
+            scrollbar-width: none;
+        }
+        .viewport::-webkit-scrollbar { display: none; }
+
         header {
-            padding: 30px 0;
-            border-bottom: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            position: sticky; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 100px; border-left: 4px solid var(--neon-blue); padding-left: 30px;
         }
-        nav { display: flex; justify-content: space-between; align-items: center; }
-        .brand { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; letter-spacing: 5px; color: var(--neon-cyan); text-shadow: var(--text-glow); text-decoration: none; }
-        
-        .nav-menu { display: flex; gap: 40px; list-style: none; }
-        .nav-item { position: relative; }
-        .nav-link { 
-            color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.8rem; text-transform: uppercase; 
-            letter-spacing: 2px; transition: 0.3s; 
+        .brand {
+            font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900;
+            letter-spacing: 10px; color: var(--neon-blue); text-shadow: var(--border-glow);
         }
-        .nav-link:hover { color: var(--neon-cyan); text-shadow: var(--text-glow); }
+        .status-panel { text-align: right; font-size: 0.7rem; color: var(--neon-purple); letter-spacing: 2px; }
 
-        /* 下拉菜单 */
-        .dropdown {
-            position: absolute; top: 100%; left: 0; padding-top: 20px; display: none;
+        /* -----------------------------------------
+           Hero: 震撼视觉中心
+        ----------------------------------------- */
+        .hero { margin-bottom: 150px; }
+        .glitch-text {
+            font-family: 'Orbitron', sans-serif; font-size: 6rem; line-height: 0.9;
+            text-transform: uppercase; font-weight: 900; position: relative;
         }
-        .dropdown-inner {
-            background: rgba(10, 10, 10, 0.95); border: 1px solid var(--neon-cyan);
-            padding: 15px; min-width: 200px; box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+        .glitch-text span { color: transparent; -webkit-text-stroke: 1px var(--neon-blue); }
+
+        /* -----------------------------------------
+           核心组件：神经节点 (Tech Stack)
+        ----------------------------------------- */
+        .node-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 100px;
         }
-        .nav-item:hover .dropdown { display: block; }
-        .dropdown-inner a { display: block; padding: 10px; color: #fff; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .dropdown-inner a:hover { color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05); }
-
-        /* Hero */
-        .hero { height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
-        .hero-tag { color: var(--neon-purple); font-size: 0.7rem; letter-spacing: 4px; margin-bottom: 10px; }
-        .hero-title { font-family: 'Syncopate', sans-serif; font-size: 4.5rem; font-weight: 700; line-height: 1; margin-bottom: 20px; }
-        .hero-title span { color: var(--neon-cyan); }
-
-        /* 技术栈 - 极致紧凑横向 */
-        .tech-line { display: flex; overflow-x: auto; gap: 20px; padding-bottom: 30px; scrollbar-width: none; }
-        .tech-node { 
-            flex: 0 0 auto; padding: 15px 25px; background: var(--glass-bg); 
-            border: 1px solid var(--glass-border); border-radius: 4px; display: flex; align-items: center; gap: 15px;
-            transition: 0.4s;
-        }
-        .tech-node:hover { border-color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05); transform: translateY(-5px); }
-        .tech-icon { font-size: 1.5rem; color: var(--neon-cyan); }
-        .tech-name { font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; }
-
-        /* 文章网格 - 深度卡片 */
-        .grid-header { margin: 80px 0 40px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; }
-        .grid-title { font-family: 'Syncopate', sans-serif; font-size: 1.5rem; letter-spacing: 3px; }
-        
-        .masonry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        @media (max-width: 1100px) { .masonry { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 700px) { .masonry { grid-template-columns: 1fr; } .hero-title { font-size: 2.5rem; } }
-
-        .article-card { 
-            background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 30px;
-            position: relative; transition: 0.5s; overflow: hidden;
-        }
-        .article-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: var(--neon-cyan); transition: 0.5s;
-        }
-        .article-card:hover::before { height: 100%; }
-        .article-card:hover { background: rgba(255,255,255,0.05); transform: translateX(10px); }
-
-        .card-cat { font-size: 0.6rem; text-transform: uppercase; color: var(--neon-purple); letter-spacing: 2px; margin-bottom: 15px; display: block; }
-        .card-title { font-size: 1.3rem; margin-bottom: 15px; font-weight: 400; line-height: 1.4; }
-        .card-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 25px; line-height: 1.6; }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 20px; }
-        .read-btn { color: var(--neon-cyan); text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
-
-        /* 搜索区域 */
-        .search-wrap { margin: 40px 0; }
-        .search-box { 
-            width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--glass-border);
-            padding: 20px 0; color: #fff; font-size: 1.5rem; font-family: 'Space Grotesk'; outline: none;
+        .tech-node {
+            background: var(--panel-bg); border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 20px; position: relative; overflow: hidden; pointer-events: auto;
             transition: 0.3s;
         }
-        .search-box:focus { border-color: var(--neon-cyan); box-shadow: 0 10px 20px -10px rgba(0, 242, 255, 0.2); }
+        .tech-node:hover {
+            border-color: var(--neon-blue); box-shadow: var(--border-glow);
+            transform: translateY(-5px); background: rgba(0, 242, 255, 0.1);
+        }
+        .tech-node::before {
+            content: 'DATA_NODE'; position: absolute; top: 5px; right: 5px; font-size: 0.5rem; color: var(--neon-blue); opacity: 0.5;
+        }
 
-        /* 底部 */
-        footer { padding: 100px 0 50px; text-align: center; border-top: 1px solid var(--glass-border); margin-top: 100px; }
-        .f-links { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; }
-        .f-links a { color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.7rem; letter-spacing: 3px; }
-        .f-links a:hover { color: var(--neon-cyan); }
+        /* -----------------------------------------
+           文章数据日志 (Data Logs)
+        ----------------------------------------- */
+        .logs-section { pointer-events: auto; }
+        .log-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+        @media (max-width: 1000px) { .log-grid { grid-template-columns: 1fr; } }
+
+        .log-entry {
+            background: rgba(255,255,255,0.02); border-left: 2px solid var(--neon-purple);
+            padding: 30px; position: relative; transition: 0.4s;
+        }
+        .log-entry:hover {
+            background: rgba(112, 0, 255, 0.05); border-left-color: var(--neon-pink);
+            transform: scale(1.02);
+        }
+        .log-entry .cat { font-size: 0.6rem; color: var(--neon-pink); letter-spacing: 3px; margin-bottom: 10px; display: block; }
+        .log-entry h3 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; margin-bottom: 15px; letter-spacing: 2px; }
+        .log-entry p { font-size: 0.85rem; color: #aaa; line-height: 1.6; margin-bottom: 25px; }
+        .entry-link {
+            display: inline-block; padding: 10px 25px; border: 1px solid var(--neon-blue);
+            color: var(--neon-blue); text-decoration: none; font-size: 0.7rem; font-weight: bold;
+            letter-spacing: 2px; transition: 0.3s;
+        }
+        .entry-link:hover { background: var(--neon-blue); color: #000; box-shadow: var(--border-glow); }
+
+        /* -----------------------------------------
+           互动元素
+        ----------------------------------------- */
+        .search-hud {
+            margin: 50px 0; border: 1px solid rgba(0, 242, 255, 0.1); padding: 10px 30px;
+            background: rgba(0, 242, 255, 0.02); pointer-events: auto;
+        }
+        .search-hud input {
+            width: 100%; background: transparent; border: none; color: var(--neon-blue);
+            font-family: 'JetBrains Mono'; font-size: 1.2rem; outline: none; padding: 15px 0;
+        }
+
+        /* -----------------------------------------
+           页脚
+        ----------------------------------------- */
+        footer {
+            margin-top: 150px; border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 50px 0; display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-logo { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--neon-purple); }
+
     </style>
 </head>
 <body>
-    <canvas id="space"></canvas>
-    
-    <header>
-        <div class="container">
-            <nav>
-                <a href="/" class="brand">MAVI_PROJECT</a>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#archives" class="nav-link">ARCHIVES [ + ]</a>
-                        <div class="dropdown">
-                            <div class="dropdown-inner">
-                                <a href="/yolo/">YOLO_RESEARCH</a>
-                                <a href="/detection/">CV_DETECTION</a>
-                                <a href="/llama/">NEURAL_LLM</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#projects" class="nav-link">PROJECTS [ + ]</a>
-                        <div class="dropdown">
-                            <div class="dropdown-inner">
-                                <a href="https://github.com/MaviProject" target="_blank">CV_TOOLBOX</a>
-                                <a href="https://github.com/MaviProject" target="_blank">DETECTION_LAB</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="/About/" class="nav-link">SYSTEM_INFO</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <div id="canvas-container"></div>
+    <div class="scanline"></div>
+    <div class="vignette"></div>
 
-    <main class="container">
+    <!-- HUD装饰层 -->
+    <div class="hud-overlay">
+        <div class="hud-corner hud-tl"></div>
+        <div class="hud-corner hud-tr"></div>
+        <div class="hud-corner hud-bl"></div>
+        <div class="hud-corner hud-br"></div>
+    </div>
+
+    <!-- 主视口 -->
+    <div class="viewport">
+        <header>
+            <div>
+                <div class="brand">MAVI_01</div>
+                <div style="font-size: 0.6rem; letter-spacing: 5px; opacity: 0.5;">DEEP_LEARNING_INTERFACE_V2.5</div>
+            </div>
+            <div class="status-panel">
+                CORE_TEMP: 32°C<br>
+                UPLINK_STATUS: ACTIVE<br>
+                SYSTEM_MODE: NEURAL_LOGS
+            </div>
+        </header>
+
         <section class="hero">
-            <div class="hero-tag">// INITIALIZING SYSTEMS...</div>
-            <h1 class="hero-title">BEYOND THE<br><span>NEURAL</span> FRONTIER.</h1>
-            <p style="color: rgba(255,255,255,0.5); max-width: 500px;">探索计算机视觉与大语言模型的前沿领域。致力于构建更智能、更高效的模型部署与算法实践空间。</p>
+            <div class="glitch-text">
+                NEURAL<br><span>BEYOND</span><br>LIMITS
+            </div>
         </section>
 
-        <div class="tech-line" id="techLine">
-            <!-- JS Inject -->
+        <section class="node-container" id="techNodes">
+            <!-- 自动填充 -->
+        </section>
+
+        <div class="search-hud">
+            <input type="text" id="searchInput" placeholder=">> SEARCH_DATABASE_QUERY_">
         </div>
 
-        <div class="search-wrap">
-            <input type="text" id="searchInput" class="search-box" placeholder="SEARCH_DATABASE_">
-        </div>
+        <section class="logs-section">
+            <div style="margin-bottom: 40px; border-bottom: 1px solid var(--neon-purple); display: flex; justify-content: space-between;">
+                <span style="font-family: 'Orbitron'; letter-spacing: 5px;">DATABASE_LOGS</span>
+                <span id="logCount" style="color: var(--neon-pink);">[00]</span>
+            </div>
+            <div class="log-grid" id="logGrid">
+                <!-- 自动填充 -->
+            </div>
+        </section>
 
-        <div class="grid-header">
-            <div class="grid-title">DATA_LOGS</div>
-            <div style="font-size: 0.7rem; color: var(--neon-purple);">TOTAL_RECORDS: <span id="recordCount">0</span></div>
-        </div>
+        <footer>
+            <div class="footer-logo">MAVI_PROJECT_SYSTEM</div>
+            <div style="display: flex; gap: 30px; font-size: 0.7rem;">
+                <a href="https://github.com/MaviProject" style="color: var(--neon-blue); text-decoration: none;">GITHUB_LINK</a>
+                <a href="/feed.xml" style="color: var(--neon-blue); text-decoration: none;">RSS_FEED</a>
+            </div>
+        </footer>
+    </div>
 
-        <div class="masonry" id="articleGrid">
-            <!-- JS Inject -->
-        </div>
-    </main>
-
-    <footer>
-        <div class="f-links">
-            <a href="https://github.com/MaviProject">GITHUB</a>
-            <a href="/feed.xml">RSS_FEED</a>
-            <a href="mailto:admin@mavi.pro">UPLINK_EMAIL</a>
-        </div>
-        <p style="font-size: 0.6rem; color: rgba(255,255,255,0.2); letter-spacing: 2px;">© 2026 MAVI_PROJECT. ALL RIGHTS RESERVED. OPERATING ON NEURAL_OS 1.0</p>
-    </footer>
-
+    <!-- 核心渲染库：使用 CDN 加载 Three.js 构建更科幻的 3D 背景 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // 1. 数据注入 (Jekyll Liquid)
-        // 强制使用全局 site.documents 或集合明确合并
+        // 1. 三维背景渲染器 (Three.js)
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 5000; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(2000)); // x
+            vertices.push(THREE.MathUtils.randFloatSpread(2000)); // y
+            vertices.push(THREE.MathUtils.randFloatSpread(2000)); // z
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0x00f2ff, size: 2, transparent: true, opacity: 0.5 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        camera.position.z = 500;
+        function animate() {
+            requestAnimationFrame(animate);
+            points.rotation.x += 0.0005;
+            points.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // 2. 数据层 (Jekyll Liquid)
         const articles = [
             {% assign all_docs = "" | split: "" %}
             {% for collection in site.collections %}
@@ -200,117 +273,65 @@ layout: null
                     {% assign all_docs = all_docs | concat: collection.docs %}
                 {% endif %}
             {% endfor %}
-            
             {% for doc in all_docs %}
             {
                 title: "{{ doc.title | escape }}",
                 category: "{{ doc.category | escape }}",
-                excerpt: "{{ doc.content | strip_html | truncate: 120 | escape }}",
+                excerpt: "{{ doc.content | strip_html | truncate: 150 | escape }}",
                 link: "{{ doc.url }}",
                 tags: {{ doc.tags | jsonify }},
-                date: "{{ doc.date | date: '%Y/%m/%d' }}"
+                date: "{{ doc.date | date: '%Y.%m.%d' }}"
             }{% unless forloop.last %},{% endunless %}
             {% endfor %}
         ];
 
         const techStack = [
-            { name: "PYTHON", icon: "fab fa-python" },
-            { name: "PYTORCH", icon: "fas fa-brain" },
-            { name: "YOLO_V5/V8", icon: "fas fa-eye" },
-            { name: "TENSORRT", icon: "fas fa-bolt" },
-            { name: "OPENCV", icon: "fas fa-microchip" },
-            { name: "LLAMA_2", icon: "fas fa-network-wired" },
-            { name: "CUDA_CORE", icon: "fas fa-server" }
+            { name: "PYTHON_ENV", icon: "fab fa-python" },
+            { name: "PYTORCH_CORE", icon: "fas fa-brain" },
+            { name: "YOLO_RESEARCH", icon: "fas fa-eye" },
+            { name: "TENSORRT_ACC", icon: "fas fa-bolt" },
+            { name: "OPENCV_LIB", icon: "fas fa-microchip" },
+            { name: "LLM_NEURAL", icon: "fas fa-network-wired" }
         ];
 
-        // 2. 渲染引擎
-        function renderArticles(data) {
-            const grid = document.getElementById('articleGrid');
-            const countEl = document.getElementById('recordCount');
-            if(countEl) countEl.innerText = data.length.toString().padStart(2, '0');
+        // 3. 渲染逻辑
+        function renderLogs(data) {
+            const grid = document.getElementById('logGrid');
+            const countEl = document.getElementById('logCount');
+            countEl.innerText = `[${data.length.toString().padStart(2, '0')}]`;
             
-            if (!grid) return;
-            
-            if (data.length === 0) {
-                grid.innerHTML = '<div style="color:rgba(255,255,255,0.2); padding:50px;">NO_DATA_LOGS_FOUND_IN_SYSTEM</div>';
-                return;
-            }
-
             grid.innerHTML = data.map(a => `
-                <article class="article-card">
-                    <span class="card-cat">${a.category}</span>
-                    <h3 class="card-title">${a.title}</h3>
-                    <p class="card-desc">${a.excerpt}</p>
-                    <div class="card-footer">
-                        <span style="font-size: 0.7rem; color: rgba(255,255,255,0.3);">${a.date}</span>
-                        <a href="${a.link}" class="read-btn">ACCESS_LOG <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </article>
+                <div class="log-entry">
+                    <span class="cat">${a.category.toUpperCase()} // DATA_ENTRY</span>
+                    <h3>${a.title}</h3>
+                    <p>${a.excerpt}</p>
+                    <a href="${a.link}" class="entry-link">ESTABLISH_UPLINK_</a>
+                </div>
             `).join('');
         }
 
         function renderTech() {
-            const el = document.getElementById('techLine');
-            if(el) {
-                el.innerHTML = techStack.map(t => `
-                    <div class="tech-node">
-                        <i class="${t.icon} tech-icon"></i>
-                        <span class="tech-name">${t.name}</span>
-                    </div>
-                `).join('');
-            }
+            document.getElementById('techNodes').innerHTML = techStack.map(t => `
+                <div class="tech-node">
+                    <i class="${t.icon}" style="color:var(--neon-blue); font-size:1.5rem; margin-bottom:10px; display:block;"></i>
+                    <div style="font-size:0.8rem; font-weight:bold;">${t.name}</div>
+                    <div style="font-size:0.5rem; opacity:0.5; margin-top:5px;">STATUS: STABLE</div>
+                </div>
+            `).join('');
         }
 
-        // 3. 搜索系统
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const q = e.target.value.toLowerCase();
-                const filtered = articles.filter(a => 
-                    a.title.toLowerCase().includes(q) || 
-                    a.category.toLowerCase().includes(q) ||
-                    (a.tags && a.tags.some(t => t.toLowerCase().includes(q)))
-                );
-                renderArticles(filtered);
-            });
-        }
-
-        // 4. 科幻背景 Canvas
-        const canvas = document.getElementById('space');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            let dots = [];
-            function initCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                dots = Array.from({length: 100}, () => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5
-                }));
-            }
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "rgba(0, 242, 255, 0.3)";
-                dots.forEach(d => {
-                    d.x += d.vx; d.y += d.vy;
-                    if(d.x < 0 || d.x > canvas.width) d.vx *= -1;
-                    if(d.y < 0 || d.y > canvas.height) d.vy *= -1;
-                    ctx.beginPath();
-                    ctx.arc(d.x, d.y, 1, 0, Math.PI*2);
-                    ctx.fill();
-                });
-                requestAnimationFrame(animate);
-            }
-            window.addEventListener('resize', initCanvas);
-            initCanvas();
-            animate();
-        }
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            const filtered = articles.filter(a => 
+                a.title.toLowerCase().includes(q) || 
+                a.category.toLowerCase().includes(q)
+            );
+            renderLogs(filtered);
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             renderTech();
-            renderArticles(articles);
+            renderLogs(articles);
         });
     </script>
 </body>
