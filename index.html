@@ -18,28 +18,30 @@ layout: null
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        
         :root {
-            /* 渐变主题色 */
             --gradient-1: #6366f1;
-            --gradient-2: #8b5cf6;
-            --gradient-3: #d946ef;
-            --gradient-4: #06b6d4;
+            --gradient-2: #a855f7;
+            --gradient-3: #ec4899;
+            --gradient-4: #22d3ee;
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --neon-pink: #ff00de;
             
-            --dark: #0f172a;
-            --dark-light: #1e293b;
-            --light: #f8fafc;
+            --dark: #020617;
+            --dark-light: #0f172a;
+            --light: #f1f5f9;
             --gray: #94a3b8;
-            --gray-light: #e2e8f0;
+            --gray-light: #1e293b;
             
-            --card-bg: rgba(30, 41, 59, 0.8);
-            --glass: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
             
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-            
-            --transition: all 0.3s ease;
+            --shadow-neon: 0 0 15px rgba(99, 102, 241, 0.4);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
 
         
         
@@ -830,9 +832,135 @@ layout: null
         .animate-fadeInUp {
             animation: fadeInUp 0.6s ease forwards;
         }
+    
+        /* 动态背景网络 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            z-index: -2;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+            transition: transform 0.2s ease-out;
+            filter: blur(80px);
+        }
+
+        /* 赛博网格 */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+        }
+
+        /* 霓虹边框卡片 */
+        .masonry-item, .project-card {
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .masonry-item::after, .project-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--gradient-4), transparent, var(--gradient-2), transparent);
+            animation: rotate 6s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .masonry-item:hover, .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+        }
+
+        .masonry-item:hover::after, .project-card:hover::after {
+            opacity: 0.3;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 标题炫酷动画 */
+        .logo-text, .section-title {
+            background: linear-gradient(90deg, var(--gradient-4), var(--gradient-1), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient-4);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* 英雄区域增强 */
+        .hero-content {
+            padding: 150px 0 100px;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: none; }
+            2% { transform: translate(-2px, 2px); text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--neon-blue); }
+            4% { transform: translate(2px, -2px); text-shadow: -2px 0 var(--neon-pink), 2px 0 var(--neon-blue); }
+            6% { transform: translate(0); text-shadow: none; }
+        }
+
     </style>
 </head>
+
 <body>
+    <div class="bg-glow" id="bgGlow"></div>
+    <div class="grid-overlay"></div>
+
     <!-- 头部导航 -->
     <header>
         <div class="container nav-container">
@@ -870,6 +998,16 @@ layout: null
             </button>
         </div>
     </header>
+
+    <header class="hero-section">
+        <div class="container hero-content">
+            <h1 class="hero-title logo-text">MAVI PROJECT</h1>
+            <p class="hero-subtitle" style="font-size: 1.2rem; color: var(--gray); max-width: 600px; margin: 0 auto;">
+                探索计算机视觉与大语言模型的前沿技术，构建智能化的未来。
+            </p>
+        </div>
+    </header>
+
 
     <!-- 搜索栏 -->
     <div class="container search-container">
