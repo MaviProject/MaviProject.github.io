@@ -1,43 +1,27 @@
-# MaviProject Jekyll Configuration
-
-title: "MaviProject | 技术博客"
-description: "专注于计算机视觉、目标检测、大语言模型的技术分享与实践"
-baseurl: ""
+title: "MAVI // NEURAL SYSTEM"
+description: "Computer Vision & AI Researcher Log"
 url: "https://maviproject.github.io"
+baseurl: ""
 
-# Build settings
 markdown: kramdown
 permalink: /:collection/:path/
 highlighter: rouge
 
-# Collections for organized content
 collections:
   yolo:
     output: true
-    permalink: /yolo/:path/
   detection:
     output: true
-    permalink: /detection/:path/
   llama:
     output: true
-    permalink: /llama/:path/
 
-# Include assets
-include:
-  - assets
-
-# Exclude unnecessary files
-exclude:
-  - README.md
-  - .gitignore
-  - generate_feed.sh
-  - setup-giscus.md
-  - update-theme-features.py
-  - GISCUS_SETUP.md
-
-# Defaults for front matter
 defaults:
   - scope:
       path: ""
     values:
       layout: "post"
+
+exclude:
+  - README.md
+  - .gitignore
+  - generate_feed.sh
