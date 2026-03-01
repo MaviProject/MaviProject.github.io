@@ -14,12 +14,14 @@ markdown: kramdown
 permalink: pretty
 highlighter: rouge
 
-# 不处理任何文件
-include: []
+# 包含必要的文件
+include:
+  - assets
+
+# 排除不需要处理的文件
 exclude: 
   - READMe.md
   - .gitignore
-  - assets/
   - _layouts/
   - _plugins/
   - generate_feed.sh
