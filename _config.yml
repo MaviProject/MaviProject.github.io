@@ -13,7 +13,6 @@ permalink: pretty
 exclude:
   - README.md
   - .gitignore
-  - assets/
 
 # Plugin support (minimal for GitHub Pages)
 plugins:
