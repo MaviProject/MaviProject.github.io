@@ -37,6 +37,50 @@
             
             --transition: all 0.3s ease;
         }
+
+        
+        /* 主题切换变量 */
+        [data-theme="light"] {
+            --dark: #f8fafc;
+            --dark-light: #e2e8f0;
+            --light: #0f172a;
+            --gray: #64748b;
+            --gray-light: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --glass: rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="light"] body {
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.05) 0%, transparent 30%);
+        }
+        
+        [data-theme="light"] .tech-stack-section {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(226, 232, 240, 0.9));
+        }
+        
+        [data-theme="light"] footer {
+            background: var(--dark-light);
+        }
+        
+        /* 图片懒加载样式 */
+        img[data-src] {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        img.loaded {
+            opacity: 1;
+        }
+        
+        /* 阅读进度条容器样式 */
+        #reading-progress-bar {
+            box-shadow: 0 2px 5px rgba(99, 102, 241, 0.3);
+        }
+
         
         * {
             margin: 0;
@@ -905,6 +949,11 @@
         </div>
     </footer>
 
+
+    <!-- 博客增强功能 -->
+    <script src="/assets/js/reading-progress.js"></script>
+
+
     <script>
         // 文章数据
         const articles = [
@@ -914,7 +963,7 @@
                 category: "目标检测",
                 excerpt: "介绍目标检测领域的常用术语、准确率、精确率、召回率等基础概念，帮助理解模型评估指标。",
                 readTime: "8分钟",
-                link: "/detection/Basic",
+                link: "/detection/Basic.md",
                 icon: "fas fa-crosshairs",
                 tags: ["目标检测", "基础知识", "评估指标"]
             },
@@ -924,7 +973,7 @@
                 category: "目标检测",
                 excerpt: "深入解析IoU、GIoU、DIoU、CIoU等边界框回归损失函数，对比各自优缺点及实现方式。",
                 readTime: "12分钟",
-                link: "/detection/IOU",
+                link: "/detection/IOU.md",
                 icon: "fas fa-search",
                 tags: ["目标检测", "损失函数", "IoU", "算法"]
             },
@@ -934,7 +983,7 @@
                 category: "目标检测",
                 excerpt: "详细介绍NMS算法原理、传统实现方法及其在目标检测中的应用，解决重复检测框问题。",
                 readTime: "10分钟",
-                link: "/detection/NMS",
+                link: "/detection/NMS.md",
                 icon: "fas fa-filter",
                 tags: ["目标检测", "NMS", "算法", "后处理"]
             },
@@ -944,7 +993,7 @@
                 category: "YOLO学习",
                 excerpt: "从系统环境配置、显卡驱动安装到YOLOv5项目部署，详细记录Ubuntu下的完整搭建流程。",
                 readTime: "15分钟",
-                link: "/yolo/install",
+                link: "/yolo/install.md",
                 icon: "fas fa-camera",
                 tags: ["YOLO", "环境搭建", "Ubuntu", "深度学习"]
             },
@@ -954,7 +1003,7 @@
                 category: "YOLO学习",
                 excerpt: "分析输入图像尺寸如何影响YOLOv5模型的感受野、全局与局部信息提取，以及训练效果。",
                 readTime: "10分钟",
-                link: "/yolo/input_size",
+                link: "/yolo/input_size.md",
                 icon: "fas fa-expand-alt",
                 tags: ["YOLO", "图像处理", "训练技巧", "深度学习"]
             },
@@ -964,7 +1013,7 @@
                 category: "YOLO学习",
                 excerpt: "深入解析YOLOv5的评估方式、混淆矩阵、PR曲线等核心概念，帮助全面理解模型性能。",
                 readTime: "18分钟",
-                link: "/yolo/yolov5_depth",
+                link: "/yolo/yolov5_depth.md",
                 icon: "fas fa-layer-group",
                 tags: ["YOLO", "模型评估", "混淆矩阵", "深度学习"]
             },
@@ -974,7 +1023,7 @@
                 category: "大语言模型",
                 excerpt: "指导如何在低显存环境下运行Llama-2，结合Llama.cpp实现模型权重下载与本地部署。",
                 readTime: "20分钟",
-                link: "/llama/install",
+                link: "/llama/install.md",
                 icon: "fas fa-comment",
                 tags: ["Llama-2", "大语言模型", "部署", "低显存"]
             }
