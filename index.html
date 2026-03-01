@@ -1,3 +1,6 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -39,6 +42,42 @@
         }
 
         
+        
+        /* 下拉菜单样式 */
+        .nav-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--dark-light);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        .dropdown-content a {
+            color: var(--light);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.9rem;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--glass);
+            color: var(--gradient-4);
+        }
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .nav-item i {
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
+
         /* 主题切换变量 */
         [data-theme="light"] {
             --dark: #f8fafc;
@@ -802,15 +841,28 @@
                 <span class="logo-text">MaviProject</span>
             </a>
             
+            
             <nav class="nav-links">
-                <a href="#articles">文章</a>
-                <a href="#projects">项目</a>
+                <div class="nav-dropdown">
+                    <a href="#articles" class="nav-item">文章 <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="/yolo/">YOLO 系列</a>
+                        <a href="/detection/">目标检测</a>
+                        <a href="/llama/">Llama 2</a>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="#projects" class="nav-item">项目 <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-content">
+                        <a href="https://github.com/MaviProject/MaviProject.github.io" target="_blank">博客源码</a>
+                        <a href="https://github.com/MaviProject" target="_blank">CV 工具箱</a>
+                        <a href="https://github.com/MaviProject" target="_blank">目标检测实践</a>
+                    </div>
+                </div>
                 <a href="/About/">关于</a>
                 <a href="/Guess/">随想</a>
-                <a href="https://github.com/MaviProject" target="_blank">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
             </nav>
+
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
@@ -944,7 +996,7 @@
             
             <div class="copyright">
                 <p>&copy; 2023-2024 MaviProject. 本博客内容采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" style="color: var(--gradient-4);"> CC BY-NC-SA 4.0</a>许可协议</p>
-                <p>Powered by GitHub Pages & Jekyll | 主题设计: 科技渐变风格</p>
+                <p>Powered by GitHub Pages & Jekyll | </p>
             </div>
         </div>
     </footer>
