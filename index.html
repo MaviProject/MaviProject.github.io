@@ -1315,24 +1315,6 @@
         }
 
         
-        // 触摸设备优化
-        function isTouchDevice() {
-            return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        }
-        
-        if (isTouchDevice()) {
-            document.body.classList.add('touch-device');
-            // 移除hover效果可能带来的问题
-            const style = document.createElement('style');
-            style.textContent = \`
-                @media (hover: hover) {
-                    .masonry-item:hover, .project-card:hover, .tech-item:hover {
-                        transform: translateY(-5px);
-                    }
-                }
-            \`;
-            document.head.appendChild(style);
-        }
 
 
         // 控制台欢迎信息
