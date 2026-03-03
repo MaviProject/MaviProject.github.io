@@ -577,5 +577,31 @@ layout: null
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
+
+    <!-- 3D 标签球逻辑 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = '#tech-sphere';
+            const texts = [
+                'PyTorch', 'TensorRT', 'YOLOv5', 'YOLOv8', 
+                'CUDA', 'C++', 'Python', 'OpenCV',
+                'Deep Learning', 'LLaMA', 'ONNX', 
+                'NMS', 'Docker', 'Jetson Orin', 'Computer Vision'
+            ];
+            const options = {
+                radius: 160,
+                maxSpeed: 'fast',
+                initSpeed: 'normal',
+                direction: 135,
+                keep: true
+            };
+            
+            // 确保容器存在
+            const el = document.querySelector(container);
+            if (el && typeof TagCloud !== 'undefined') {
+                TagCloud(container, texts, options);
+            }
+        });
+    </script>
 </body>
 </html>
