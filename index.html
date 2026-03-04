@@ -10,6 +10,7 @@ layout: null
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
     <style>
         :root {
             --neon-blue: #00f2ff;
@@ -30,10 +31,8 @@ layout: null
             scroll-behavior: smooth;
         }
 
-        /* 3D 背景容器 */
         #webgl-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; }
         
-        /* 赛博网格与扫描线 */
         .cyber-grid {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: 
@@ -52,7 +51,6 @@ layout: null
         }
         @keyframes scan { 0% { top: -150px; } 100% { top: 100vh; } }
 
-        /* 导航栏 */
         header {
             position: fixed; top: 0; width: 100%; z-index: 100;
             background: rgba(3, 5, 8, 0.8); backdrop-filter: blur(10px);
@@ -61,109 +59,52 @@ layout: null
         }
         .brand { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--neon-blue); text-shadow: var(--border-glow); text-decoration: none; font-weight: 900; }
         .nav-links { display: flex; gap: 30px; }
-        .nav-links a {
-            color: #fff; text-decoration: none; font-size: 1rem; font-weight: 700;
-            padding: 5px 10px; position: relative; transition: 0.3s;
-        }
+        .nav-links a { color: #fff; text-decoration: none; font-size: 1rem; font-weight: 700; padding: 5px 10px; position: relative; transition: 0.3s; }
         .nav-links a:hover { color: var(--neon-blue); text-shadow: var(--border-glow); }
-        .nav-links a::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
-            background: var(--neon-blue); transition: 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
 
-        /* 内容区 */
         .container { max-width: 1400px; margin: 0 auto; padding: 120px 5vw 50px; }
-        
-        /* 炫酷标题 */
-        .section-title {
-            font-family: 'Orbitron', 'Noto Sans SC', sans-serif; font-size: 2.5rem; color: #fff;
-            margin-bottom: 40px; display: flex; align-items: center; gap: 15px;
-        }
+        .section-title { font-family: 'Orbitron', 'Noto Sans SC', sans-serif; font-size: 2.5rem; color: #fff; margin-bottom: 40px; display: flex; align-items: center; gap: 15px; }
         .section-title::before { content: '>>'; color: var(--neon-pink); }
-        .section-title span { font-size: 1rem; color: var(--neon-blue); letter-spacing: 2px; opacity: 0.7; margin-left: 10px; text-transform: uppercase; }
 
-        /* 动画类：进入视野触发 */
         .reveal-fx { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .reveal-fx.active { opacity: 1; transform: translateY(0); }
 
-        
-        /* 3D 标签球样式 */
-        .tagcloud {
-            font-family: 'Orbitron', 'Noto Sans SC', sans-serif;
-            font-weight: bold;
-            letter-spacing: 1px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-            margin: 0 auto;
-            cursor: pointer;
-        }
-        .tagcloud--item:hover {
-            color: var(--neon-pink);
-            text-shadow: 0 0 15px rgba(255, 0, 122, 0.8);
-            transform: scale(1.2);
-            transition: all 0.2s;
-        }
-
-        /* 1. 关于我 (About Me) */
         .about-section { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-bottom: 100px; align-items: center; }
-        @media (max-width: 900px) { .about-section { grid-template-columns: 1fr; } }
-        .about-card {
-            background: var(--panel-bg); border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 40px; position: relative; backdrop-filter: blur(10px);
-        }
+        .about-card { background: var(--panel-bg); border: 1px solid rgba(0, 242, 255, 0.2); padding: 40px; position: relative; backdrop-filter: blur(10px); }
         .about-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-blue); box-shadow: var(--border-glow); }
         .glitch-title { font-family: 'Orbitron'; font-size: 3rem; color: #fff; margin-bottom: 20px; font-weight: 900; }
         .about-desc { font-size: 1.1rem; line-height: 1.8; color: #aaa; margin-bottom: 30px; }
         .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
         .skill-tag { padding: 5px 15px; border: 1px solid var(--neon-blue); color: var(--neon-blue); font-size: 0.9rem; background: rgba(0, 242, 255, 0.05); }
 
-        .about-visual { height: 100%; min-height: 300px; border: 1px dashed rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; position: relative; }
-        .holo-ring { width: 200px; height: 200px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--neon-blue); border-bottom-color: var(--neon-pink); animation: spin 4s linear infinite; }
-        .holo-inner { width: 150px; height: 150px; position: absolute; border-radius: 50%; border: 1px dashed var(--neon-blue); animation: spin 8s linear infinite reverse; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .about-visual { height: 100%; min-height: 300px; border: none; display: flex; justify-content: center; align-items: center; position: relative; }
 
-        /* 2. 瀑布流文档 (Masonry Docs) */
         .docs-section { margin-bottom: 100px; }
         .masonry-grid { column-count: 3; column-gap: 30px; }
         @media (max-width: 1100px) { .masonry-grid { column-count: 2; } }
         @media (max-width: 768px) { .masonry-grid { column-count: 1; } }
         
-        .doc-card {
-            break-inside: avoid; background: rgba(5, 10, 15, 0.8); border: 1px solid rgba(255,255,255,0.1);
-            padding: 30px; margin-bottom: 30px; transition: 0.4s; position: relative; overflow: hidden;
-        }
+        .doc-card { break-inside: avoid; background: rgba(5, 10, 15, 0.8); border: 1px solid rgba(255,255,255,0.1); padding: 30px; margin-bottom: 30px; transition: 0.4s; position: relative; overflow: hidden; }
         .doc-card:hover { border-color: var(--neon-blue); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.15); }
-        .doc-card::after { content: ''; position: absolute; top: 0; right: 0; width: 30px; height: 30px; background: linear-gradient(225deg, rgba(0,242,255,0.2) 50%, transparent 50%); }
         .doc-cat { font-size: 0.8rem; color: var(--neon-pink); font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 10px; display: block; text-transform: uppercase; }
         .doc-title { font-size: 1.4rem; color: #fff; margin-bottom: 15px; font-weight: 700; }
         .doc-excerpt { font-size: 0.95rem; color: #888; line-height: 1.6; margin-bottom: 20px; }
         .doc-link { color: var(--neon-blue); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
-        .doc-link:hover { text-shadow: var(--border-glow); }
-        
-        .view-all-btn { display: inline-block; margin-top: 20px; padding: 12px 30px; background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); text-decoration: none; font-weight: bold; transition: 0.3s; font-family: 'Orbitron', sans-serif; }
-        .view-all-btn:hover { background: var(--neon-blue); color: #000; box-shadow: var(--border-glow); }
 
-        /* 3. 开源项目 (Projects) */
         .projects-section { margin-bottom: 100px; }
         .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        @media (max-width: 900px) { .proj-grid { grid-template-columns: 1fr; } }
-        
         .proj-card { display: flex; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; }
-        .proj-card:hover { border-color: var(--neon-purple); transform: scale(1.02); box-shadow: 0 0 20px rgba(112, 0, 255, 0.2); }
         .proj-icon { width: 120px; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; font-size: 3rem; color: var(--neon-purple); border-right: 1px solid rgba(255,255,255,0.05); }
         .proj-info { padding: 30px; flex-grow: 1; }
         .proj-title { font-size: 1.5rem; color: #fff; margin-bottom: 10px; }
         .proj-desc { color: #aaa; font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
         .proj-btn { color: #fff; background: rgba(112, 0, 255, 0.2); padding: 8px 15px; text-decoration: none; font-size: 0.8rem; border: 1px solid var(--neon-purple); transition: 0.3s; }
-        .proj-btn:hover { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); }
 
+        .tagcloud { font-family: 'Orbitron', 'Noto Sans SC', sans-serif; font-weight: bold; letter-spacing: 1px; color: var(--neon-blue); text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); cursor: pointer; }
         footer { text-align: center; padding: 50px 0; border-top: 1px solid rgba(255,255,255,0.1); font-family: 'Orbitron'; color: #666; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
 </head>
 <body>
-    <!-- 3D 粒子背景 -->
     <div id="webgl-container"></div>
     <div class="cyber-grid"></div>
     <div class="scanline"></div>
@@ -178,43 +119,20 @@ layout: null
     </header>
 
     <div class="container">
-        <!-- 关于我 -->
         <section class="about-section reveal-fx">
             <div class="about-card">
                 <div style="color: var(--neon-blue); font-family: 'Orbitron'; margin-bottom: 10px; letter-spacing: 3px;">// SYSTEM.PROFILE</div>
                 <h1 class="glitch-title">计算机视觉与AI算法工程师</h1>
-                <p class="about-desc">
-                    致力于探索人工智能的前沿领域。专注于目标检测算法（YOLO系列）的研究与边缘设备（TensorRT / CUDA）的高效部署。同时涉猎大语言模型（LLM）的本地化运行与工程实践。
-                </p>
-                <div class="skill-tags">
-                    <span class="skill-tag">Python & C++</span>
-                    <span class="skill-tag">PyTorch / TensorFlow</span>
-                    <span class="skill-tag">YOLO / Object Detection</span>
-                    <span class="skill-tag">TensorRT / CUDA</span>
-                    <span class="skill-tag">LLaMA / 深度学习</span>
-                </div>
+                <p class="about-desc">致力于探索人工智能的前沿领域。专注于目标检测算法（YOLO系列）的研究与边缘设备的高效部署。</p>
             </div>
-            
-            <div class="about-visual" id="tech-sphere" style="border: none; position: relative;">
-                <!-- 3D 标签球将被注入到这里 -->
-                <div style="position: absolute; bottom: 10px; font-family: 'Orbitron'; color: rgba(0,242,255,0.4); font-size: 0.7rem; text-align: center; width: 100%;">
-                    [ INTERACTIVE_MATRIX_NODE ]
-                </div>
-            </div>
+            <div class="about-visual" id="tech-sphere"></div>
         </section>
 
-        <!-- 最新文档 (瀑布流) -->
         <section class="docs-section reveal-fx">
             <h2 class="section-title">最新文档 <span>Latest_Logs</span></h2>
-            <div class="masonry-grid" id="masonry-docs">
-                <!-- 动态注入的数据将在这里呈现 -->
-            </div>
-            <div style="text-align: center;">
-                <a href="/docs/" class="view-all-btn">进入完整文档库 [ACCESS_ALL]</a>
-            </div>
+            <div class="masonry-grid" id="masonry-docs"></div>
         </section>
 
-        <!-- 开源项目 -->
         <section class="projects-section reveal-fx">
             <h2 class="section-title">开源项目 <span>Open_Source</span></h2>
             <div class="proj-grid">
@@ -222,39 +140,27 @@ layout: null
                     <div class="proj-icon"><i class="fas fa-microchip"></i></div>
                     <div class="proj-info">
                         <h3 class="proj-title">CV_Toolbox 工具箱</h3>
-                        <p class="proj-desc">包含常用计算机视觉数据预处理、格式转换（COCO/VOC/YOLO）以及图像增强的 Python 脚本集合，提升炼丹效率。</p>
+                        <p class="proj-desc">包含常用计算机视觉数据预处理、格式转换（COCO/VOC/YOLO）以及图像增强的 Python 脚本集合。</p>
                         <a href="https://github.com/MaviProject" target="_blank" class="proj-btn"><i class="fab fa-github"></i> GITHUB 仓库</a>
-                    </div>
-                </div>
-                <div class="proj-card">
-                    <div class="proj-icon" style="color: var(--neon-blue); border-right-color: rgba(0,242,255,0.2);"><i class="fas fa-eye"></i></div>
-                    <div class="proj-info">
-                        <h3 class="proj-title">Detection_Lab 部署库</h3>
-                        <p class="proj-desc">YOLO 系列模型在 Jetson 等边缘端设备上的 TensorRT 加速部署方案，包含自定义 NMS 算子与 C++ 推理代码。</p>
-                        <a href="https://github.com/MaviProject" target="_blank" class="proj-btn" style="background: rgba(0,242,255,0.1); border-color: var(--neon-blue); color: var(--neon-blue);"><i class="fab fa-github"></i> GITHUB 仓库</a>
                     </div>
                 </div>
             </div>
         </section>
     </div>
 
-    <footer>
-        © 2026 Mavi开源站 | BUILT WITH NEURAL INTERFACE UI
-    </footer>
+    <footer>© 2026 Mavi开源站 | BUILT WITH NEURAL INTERFACE UI</footer>
 
-    <!-- 数据注入引擎 (安全获取 Jekyll Markdown 文件) -->
     <script>
         const rawArticles = [
             {% assign is_first = true %}
             {% for p in site.pages %}
                 {% if p.layout == 'post' or p.category %}
-                    {% if is_first == false %},{% endif %}
+                    {% unless is_first %},{% endunless %}
                     {
                         title: {{ p.title | default: '未命名文档' | jsonify }},
                         category: {{ p.category | default: '未分类' | jsonify }},
                         excerpt: {{ p.content | strip_html | truncate: 100 | jsonify }},
-                        link: {{ p.url | relative_url | jsonify }},
-                        date: {{ p.date | date: '%Y-%m-%d' | jsonify }}
+                        link: {{ p.url | relative_url | jsonify }}
                     }
                     {% assign is_first = false %}
                 {% endif %}
@@ -264,9 +170,7 @@ layout: null
         document.addEventListener('DOMContentLoaded', () => {
             const grid = document.getElementById('masonry-docs');
             if(rawArticles.length > 0) {
-                // 取最新的 6 篇文章展示在首页
-                const displayDocs = rawArticles.slice(0, 6);
-                grid.innerHTML = displayDocs.map(doc => `
+                grid.innerHTML = rawArticles.slice(0, 6).map(doc => `
                     <article class="doc-card">
                         <span class="doc-cat">${doc.category}</span>
                         <h3 class="doc-title">${doc.title}</h3>
@@ -274,11 +178,8 @@ layout: null
                         <a href="${doc.link}" class="doc-link">开始阅读 <i class="fas fa-arrow-right"></i></a>
                     </article>
                 `).join('');
-            } else {
-                grid.innerHTML = `<div style="color:var(--neon-pink); padding: 20px; font-family:'Orbitron';">NO_DATA_LOGS_FOUND_IN_SYSTEM_PAGES</div>`;
             }
 
-            // 滚动显现动画 (Intersection Observer)
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if(entry.isIntersecting) {
@@ -287,100 +188,66 @@ layout: null
                     }
                 });
             }, { threshold: 0.1 });
-
             document.querySelectorAll('.reveal-fx').forEach(el => observer.observe(el));
+
+            // TagCloud init
+            if (typeof TagCloud !== 'undefined') {
+                TagCloud('#tech-sphere', [
+                    'PyTorch', 'TensorRT', 'YOLOv5', 'YOLOv8', 'CUDA', 'C++', 'Python', 'OpenCV', 'LLaMA', 'ONNX', 'Docker'
+                ], { radius: 160, maxSpeed: 'fast', initSpeed: 'normal', direction: 135, keep: true });
+            }
         });
     </script>
 
-    
-    <!-- Three.js 动态背景 (优化版太阳系) -->
     <script>
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x030508, 0.001);
-        
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
-        
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('webgl-container').appendChild(renderer.domElement);
 
-        // 1. 星空背景
         const starGeo = new THREE.BufferGeometry();
         const starPos = [];
         for(let i=0; i<2000; i++) {
-            starPos.push(
-                THREE.MathUtils.randFloatSpread(2000),
-                THREE.MathUtils.randFloatSpread(2000),
-                THREE.MathUtils.randFloatSpread(2000)
-            );
+            starPos.push(THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000), THREE.MathUtils.randFloatSpread(2000));
         }
         starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({color: 0xffffff, size: 1.5, transparent: true, opacity: 0.8});
-        const stars = new THREE.Points(starGeo, starMat);
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 1.5, transparent: true, opacity: 0.8}));
         scene.add(stars);
 
-        // 2. 光照
         const ambientLight = new THREE.AmbientLight(0x333333);
         scene.add(ambientLight);
         const sunLight = new THREE.PointLight(0xffeedd, 2, 1000);
         scene.add(sunLight);
 
-        // 3. 构建太阳系
         const planets = [];
-        
-        // 太阳
-        const sunGeo = new THREE.SphereGeometry(20, 32, 32);
-        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
-        const sun = new THREE.Mesh(sunGeo, sunMat);
+        const sun = new THREE.Mesh(new THREE.SphereGeometry(20, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
         scene.add(sun);
         
-        // 发光外晕
-        const haloGeo = new THREE.SphereGeometry(24, 32, 32);
-        const haloMat = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending });
-        const halo = new THREE.Mesh(haloGeo, haloMat);
-        scene.add(halo);
-
-        // 创建行星辅助函数
         const createPlanet = (radius, color, distance, speed) => {
-            const geo = new THREE.SphereGeometry(radius, 32, 32);
-            const mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.7, metalness: 0.2 });
-            const mesh = new THREE.Mesh(geo, mat);
-            
+            const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 32, 32), new THREE.MeshStandardMaterial({ color: color, roughness: 0.7, metalness: 0.2 }));
             const obj = new THREE.Object3D();
             mesh.position.x = distance;
             obj.add(mesh);
             scene.add(obj);
-            
-            // 轨道线
-            const orbitGeo = new THREE.RingGeometry(distance, distance + 0.3, 64);
-            const orbitMat = new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent:true, opacity:0.1});
-            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
+            const orbit = new THREE.Mesh(new THREE.RingGeometry(distance, distance + 0.3, 64), new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent:true, opacity:0.1}));
             orbit.rotation.x = Math.PI / 2;
             scene.add(orbit);
-
-            planets.push({ obj: obj, mesh: mesh, speed: speed, distance: distance, radius: radius });
-            return { obj, mesh };
+            planets.push({ obj, mesh, speed, radius });
         };
 
-        createPlanet(3, 0xaaaaaa, 40, 0.02);    // 水星
-        createPlanet(5, 0xffa500, 60, 0.015);   // 金星
-        createPlanet(6, 0x00f2ff, 90, 0.01);    // 地球
-        createPlanet(4, 0xff4500, 120, 0.008);  // 火星
-        createPlanet(12, 0xffaa77, 180, 0.005); // 木星
-        
-        // 土星带环
-        const saturnData = createPlanet(10, 0xeeddcc, 240, 0.003);
-        const ringGeo = new THREE.RingGeometry(14, 20, 32);
-        const ringMat = new THREE.MeshStandardMaterial({color: 0xcccccc, side: THREE.DoubleSide, transparent:true, opacity:0.7});
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 2 + 0.2;
-        saturnData.mesh.add(ring);
+        createPlanet(3, 0xaaaaaa, 40, 0.02);
+        createPlanet(5, 0xffa500, 60, 0.015);
+        createPlanet(6, 0x00f2ff, 90, 0.01);
+        createPlanet(4, 0xff4500, 120, 0.008);
+        createPlanet(12, 0xffaa77, 180, 0.005);
 
-        // 4. 视角控制
         let currentTarget = null;
         let cameraTargetPos = new THREE.Vector3(0, 150, 300);
         let cameraLookAt = new THREE.Vector3(0, 0, 0);
-        
+        let lookAtCurrent = new THREE.Vector3(0,0,0);
+
         const switchView = () => {
             if(Math.random() < 0.3) {
                 currentTarget = null;
@@ -389,79 +256,38 @@ layout: null
                 currentTarget = planets[Math.floor(Math.random() * planets.length)];
             }
         };
-
         setInterval(switchView, 10000);
-        
+
         let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (e) => {
             mouseX = (e.clientX - window.innerWidth/2) * 0.05;
             mouseY = (e.clientY - window.innerHeight/2) * 0.05;
         });
 
-        // 5. 渲染循环
         function animate() {
             requestAnimationFrame(animate);
-
             sun.rotation.y += 0.005;
             stars.rotation.y += 0.0002;
-            
-            planets.forEach(p => {
-                p.obj.rotation.y += p.speed;
-                p.mesh.rotation.y += 0.02;
-            });
-
+            planets.forEach(p => { p.obj.rotation.y += p.speed; p.mesh.rotation.y += 0.02; });
             if(currentTarget) {
                 const pos = new THREE.Vector3();
                 currentTarget.mesh.getWorldPosition(pos);
-                
-                const idealPos = pos.clone().add(new THREE.Vector3(currentTarget.radius * 3, currentTarget.radius * 2, currentTarget.radius * 4));
-                cameraTargetPos.lerp(idealPos, 0.03);
+                cameraTargetPos.lerp(pos.clone().add(new THREE.Vector3(currentTarget.radius * 3, currentTarget.radius * 2, currentTarget.radius * 4)), 0.03);
                 cameraLookAt.lerp(pos, 0.05);
             } else {
                 cameraLookAt.lerp(new THREE.Vector3(0,0,0), 0.02);
             }
-
-            const finalCamPos = cameraTargetPos.clone().add(new THREE.Vector3(mouseX, -mouseY, 0));
-            camera.position.lerp(finalCamPos, 0.03);
-            camera.lookAt(cameraLookAt);
-
+            lookAtCurrent.lerp(cameraLookAt, 0.03);
+            camera.position.lerp(cameraTargetPos.clone().add(new THREE.Vector3(mouseX, -mouseY, 0)), 0.03);
+            camera.lookAt(lookAtCurrent);
             renderer.render(scene, camera);
         }
-        
         switchView();
         animate();
-
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
-
-
-    <!-- 3D 标签球逻辑 -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = '#tech-sphere';
-            const texts = [
-                'PyTorch', 'TensorRT', 'YOLOv5', 'YOLOv8', 
-                'CUDA', 'C++', 'Python', 'OpenCV',
-                'Deep Learning', 'LLaMA', 'ONNX', 
-                'NMS', 'Docker', 'Jetson Orin', 'Computer Vision'
-            ];
-            const options = {
-                radius: 160,
-                maxSpeed: 'fast',
-                initSpeed: 'normal',
-                direction: 135,
-                keep: true
-            };
-            
-            // 确保容器存在并清空可能存在的旧内容
-            const el = document.querySelector(container);
-            if (el) {
-                TagCloud(container, texts, options);
-            }
         });
     </script>
 </body>
