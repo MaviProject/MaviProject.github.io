@@ -144,7 +144,102 @@ layout: null
         .view-all-btn { display: inline-block; margin-top: 20px; padding: 12px 30px; background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); text-decoration: none; font-weight: bold; transition: 0.3s; font-family: 'Orbitron', sans-serif; }
         .view-all-btn:hover { background: var(--neon-blue); color: #000; box-shadow: var(--border-glow); }
 
-        /* 3. 开源项目 (Projects) */
+        
+        /* 2.5 专业领域 (Expertise) */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+            padding: 0 10px;
+        }
+        .expertise-card {
+            background: linear-gradient(145deg, rgba(10, 15, 25, 0.85), rgba(5, 10, 20, 0.95));
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 16px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .expertise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 242, 255, 0.1), 
+                transparent);
+            transition: left 0.6s;
+        }
+        .expertise-card:hover::before {
+            left: 100%;
+        }
+        .expertise-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.3),
+                        0 0 30px rgba(112, 0, 255, 0.2);
+        }
+        .expertise-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        .expertise-icon {
+            font-size: 2.2rem;
+            color: var(--neon-blue);
+            filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.7));
+        }
+        .expertise-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+        .expertise-subtitle {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--neon-purple);
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        .expertise-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(224, 255, 255, 0.9);
+            border-left: 3px solid var(--neon-pink);
+            padding-left: 15px;
+        }
+        .expertise-highlight {
+            color: var(--neon-blue);
+            font-weight: 700;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .expertise-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin: 40px 0;
+            }
+            .expertise-card {
+                padding: 20px;
+            }
+            .expertise-title {
+                font-size: 1.3rem;
+            }
+        }
+
+/* 3. 开源项目 (Projects) */
         .projects-section { margin-bottom: 100px; }
         .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
         @media (max-width: 900px) { .proj-grid { grid-template-columns: 1fr; } }
@@ -173,6 +268,7 @@ layout: null
         <nav class="nav-links">
             <a href="/">首页</a>
             <a href="/docs/">文档库</a>
+            <a href="#expertise">专业领域</a>
             <a href="/projects/">开源项目</a>
         </nav>
     </header>
@@ -214,7 +310,69 @@ layout: null
             </div>
         </section>
 
-        <!-- 开源项目 -->
+                <!-- 专业领域 -->
+        <section id="expertise" class="section">
+            <h2 class="section-title">专业领域 <span>Expertise</span></h2>
+            <div class="expertise-grid">
+                <!-- 视觉模型 -->
+                <div class="expertise-card">
+                    <div class="expertise-header">
+                        <i class="expertise-icon fas fa-eye"></i>
+                        <div>
+                            <h3 class="expertise-title">视觉模型</h3>
+                            <p class="expertise-subtitle">Vision Models</p>
+                        </div>
+                    </div>
+                    <div class="expertise-content">
+                        提供基于 <span class="expertise-highlight">Jetson</span> 以及 <span class="expertise-highlight">琨云芯片</span> 的小模型识别能力，专注 <span class="expertise-highlight">生产制造、无人机以及船舶领域</span> 的特殊模型场景，同时也逐步实现采用 <span class="expertise-highlight">多模态能力</span> 实现更具有语义环境理解的视觉分析能力支持。
+                    </div>
+                </div>
+                
+                <!-- 智能体 -->
+                <div class="expertise-card">
+                    <div class="expertise-header">
+                        <i class="expertise-icon fas fa-robot"></i>
+                        <div>
+                            <h3 class="expertise-title">智能体</h3>
+                            <p class="expertise-subtitle">AI Agents</p>
+                        </div>
+                    </div>
+                    <div class="expertise-content">
+                        提供基于 <span class="expertise-highlight">离线以及云端API</span> 的垂直领域智能体定制，目前主要专注 <span class="expertise-highlight">生产制造、流程检测相关领域</span> 智能体开发，为企业提供定制化AI解决方案。
+                    </div>
+                </div>
+                
+                <!-- openclaw -->
+                <div class="expertise-card">
+                    <div class="expertise-header">
+                        <i class="expertise-icon fas fa-shrimp"></i>
+                        <div>
+                            <h3 class="expertise-title">OpenClaw</h3>
+                            <p class="expertise-subtitle">AI Orchestration</p>
+                        </div>
+                    </div>
+                    <div class="expertise-content">
+                        提供企业内的 <span class="expertise-highlight">自我学习龙虾环境</span> 搭建以及 <span class="expertise-highlight">Skills技能训练</span>，目前已具备内部生产全线Openclaw赋能，支持自动化工作流和智能体协同。
+                    </div>
+                </div>
+                
+                <!-- 算法推理 -->
+                <div class="expertise-card">
+                    <div class="expertise-header">
+                        <i class="expertise-icon fas fa-chart-line"></i>
+                        <div>
+                            <h3 class="expertise-title">算法推理</h3>
+                            <p class="expertise-subtitle">Algorithm Inference</p>
+                        </div>
+                    </div>
+                    <div class="expertise-content">
+                        基于 <span class="expertise-highlight">机器学习算法</span> 以及 <span class="expertise-highlight">视觉算子</span> 实现数据以及图像的处理，目前主要专注 <span class="expertise-highlight">船舶领域的航行数据、机舱数据的处理分析预测</span>，实现轨迹预测、能耗预测等。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- 开源项目 -->
         <section class="projects-section reveal-fx">
             <h2 class="section-title">开源项目 <span>Open_Source</span></h2>
             <div class="proj-grid">
