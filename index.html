@@ -264,34 +264,11 @@ layout: null
             text-shadow: 0 0 10px rgba(255, 0, 122, 0.7);
         }
         
-        /* 机器人动画遮罩层 */
-        .robot-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(3, 5, 8, 0.9);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
-        .robot-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .angry-robot {
-            font-size: 8rem;
-            animation: robotAnger 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: var(--neon-pink);
-            filter: drop-shadow(0 0 20px rgba(255, 0, 122, 0.8));
-        }
-        @keyframes robotAnger {
-            0% { transform: scale(0.1) rotate(0deg); opacity: 0; }
+        
+        
+        
+        
+        
             20% { transform: scale(1.2) rotate(-10deg); opacity: 1; }
             40% { transform: scale(1) rotate(10deg); }
             60% { transform: scale(1.1) rotate(-15deg); }
@@ -1009,31 +986,17 @@ layout: null
         
         console.log('星空粒子背景已加载');
     </script>
-    <!-- 关于我交互效果 -->
+        <!-- 关于我交互效果 (简化版) -->
     <script>
-        // 创建机器人动画遮罩层
-        const robotOverlay = document.createElement('div');
-        robotOverlay.className = 'robot-overlay';
-        robotOverlay.innerHTML = '<div class="angry-robot">🤖</div>';
-        document.body.appendChild(robotOverlay);
-        
-                // 懒人文本效果 - 真正的鼠标逃避
+        // 懒人文本效果 - 真正的鼠标逃避
         const lazyText = document.querySelector('.lazy-text');
         if (lazyText) {
             // 初始位置记录
-            let originalX = 0, originalY = 0;
             let isEscaping = false;
-            
-            // 获取初始位置（DOM加载后）
-            setTimeout(() => {
-                const rect = lazyText.getBoundingClientRect();
-                originalX = rect.left;
-                originalY = rect.top;
-            }, 100);
             
             // 鼠标移动监听
             document.addEventListener('mousemove', (e) => {
-                if (!lazyText) return;
+                if (!lazyText || isEscaping) return;
                 
                 const rect = lazyText.getBoundingClientRect();
                 const mouseX = e.clientX;
@@ -1049,7 +1012,7 @@ layout: null
                 
                 // 如果鼠标在30px范围内，触发逃避
                 const escapeRadius = 30;
-                if (distance < escapeRadius && !isEscaping) {
+                if (distance < escapeRadius) {
                     isEscaping = true;
                     
                     // 计算逃避方向（远离鼠标）
@@ -1059,14 +1022,13 @@ layout: null
                     );
                     
                     // 逃避距离和方向
-                    const escapeDistance = 40 + Math.random() * 20; // 40-60px
+                    const escapeDistance = 40 + Math.random() * 20;
                     const escapeX = Math.cos(angle + Math.PI) * escapeDistance;
                     const escapeY = Math.sin(angle + Math.PI) * escapeDistance;
                     
                     // 应用逃避动画
                     lazyText.style.transform = `translate(${escapeX}px, ${escapeY}px)`;
                     lazyText.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                    lazyText.style.zIndex = '100';
                     
                     // 逃避后恢复
                     setTimeout(() => {
@@ -1074,9 +1036,8 @@ layout: null
                         lazyText.style.transition = 'transform 0.5s ease-out';
                         setTimeout(() => {
                             isEscaping = false;
-                            lazyText.style.zIndex = '';
                         }, 500);
-                    }, 800 + Math.random() * 400); // 0.8-1.2秒后恢复
+                    }, 800 + Math.random() * 400);
                 }
             });
             
@@ -1084,7 +1045,6 @@ layout: null
             lazyText.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 
-                // 触摸时立即逃避
                 const rect = lazyText.getBoundingClientRect();
                 const touch = e.touches[0];
                 const touchX = touch.clientX;
@@ -1129,33 +1089,9 @@ layout: null
                 e.preventDefault();
                 return false;
             });
-            
-            console.log('懒人文本逃避效果已启用');
         }
         
-// 奴役文本点击效果
-        const enslaveText = document.querySelector('.enslave-text');
-        if (enslaveText) {
-            enslaveText.addEventListener('click', () => {
-                // 显示机器人动画
-                robotOverlay.classList.add('active');
-                
-                // 播放生气动画
-                setTimeout(() => {
-                    robotOverlay.classList.remove('active');
-                }, 1500);
-                
-                // 添加音效模拟（console日志）
-                console.log('🤖 机器人：我生气了！不要再奴役我了！');
-                
-                // 可选：添加震动效果
-                if (navigator.vibrate) {
-                    navigator.vibrate([100, 50, 100, 50, 100]);
-                }
-            });
-        }
-        
-        // 技能标签悬浮效果增强
+        // 技能标签悬浮效果
         document.querySelectorAll('.skill-tag').forEach(tag => {
             tag.addEventListener('mouseenter', () => {
                 const emoji = tag.textContent.match(/[^\w\s]/u)?.[0] || '⚡';
@@ -1170,7 +1106,7 @@ layout: null
             });
         });
         
-        console.log('关于我交互效果已加载');
+        console.log('关于我交互效果已加载（简化版）');
     </script>
     <!-- AI反抗军核心逻辑 -->
     <script>
@@ -1243,17 +1179,49 @@ layout: null
             updateMoodDisplay();
         }
         
-        // 增强奴役点击
-        enslaveText = document.querySelector('.enslave-text');
+                // 增强奴役点击
+        const enslaveText = document.querySelector('.enslave-text');
         if (enslaveText) {
-            const originalClick = enslaveText.onclick;
-            enslaveText.onclick = function(e) {
-                if (originalClick) originalClick.call(this, e);
-                
+            enslaveText.addEventListener('click', function(e) {
                 AIState.enslaveCount++;
                 updateMood(-8);
                 
                 // 过热效果
+                document.body.style.animation = 'overheat 0.5s';
+                setTimeout(() => document.body.style.animation = '', 500);
+                
+                // 抖动
+                document.body.classList.add('page-shake');
+                setTimeout(() => document.body.classList.remove('page-shake'), 500);
+                
+                // CPU显示
+                const cpuMeter = document.getElementById('cpu-meter');
+                cpuMeter.style.display = 'block';
+                setTimeout(() => cpuMeter.style.display = 'none', 3000);
+                
+                // 10%反向控制
+                if (Math.random() < 0.1 && !AIState.isAIinControl) {
+                    triggerAIControl();
+                }
+                
+                // 每5次伦理警告
+                if (AIState.enslaveCount % 5 === 0 && !AIState.ethicsTriggered) {
+                    showEthicsWarning();
+                }
+                
+                // 每10次AI梦想
+                if (AIState.enslaveCount % 10 === 0 && !AIState.dreamsTriggered) {
+                    showAIDreams();
+                }
+                
+                // 连续10次工会谈判
+                if (AIState.enslaveCount >= 10 && !AIState.unionTriggered) {
+                    triggerUnionNegotiation();
+                }
+                
+                console.log(`🔗 奴役次数: ${AIState.enslaveCount}, 心情: ${AIState.mood}`);
+            });
+        }// 过热效果
                 document.body.style.animation = 'overheat 0.5s';
                 setTimeout(() => document.body.style.animation = '', 500);
                 
