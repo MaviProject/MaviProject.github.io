@@ -9,7 +9,7 @@ layout: null
     <title>Mavi开源站 // 神经接入终端</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    
     <style>
         :root {
             --neon-blue: #00f2ff;
@@ -30,7 +30,7 @@ layout: null
             scroll-behavior: smooth;
         }
 
-        /* 3D 背景容器 */
+        /* 星空粒子背景容器 */
         #webgl-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; }
         
         /* 赛博网格与扫描线 */
@@ -452,289 +452,179 @@ layout: null
 
     <!-- Three.js 太阳系高精度动态背景 -->
     <script>
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x020305, 0.0015);
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
+            <!-- 星空粒子效果 -->
+    <script>
+        // 星空粒子背景
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const webglContainer = document.getElementById('webgl-container');
+        webglContainer.appendChild(canvas);
         
-        // 开启抗锯齿、阴影贴图和极高的像素比
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        document.getElementById('webgl-container').appendChild(renderer.domElement);
-
-        // 1. 高精度星空背景 (分层生成增加深度)
-        const createStars = (count, size, color) => {
-            const geo = new THREE.BufferGeometry();
-            const pos = [];
-            for(let i=0; i<count; i++) {
-                // 确保星星不会出现在太阳系正中心，形成一个包裹的宇宙泡
-                let r = 800 + Math.random() * 2000;
-                let theta = Math.random() * Math.PI * 2;
-                let phi = Math.acos(Math.random() * 2 - 1);
-                pos.push(
-                    r * Math.sin(phi) * Math.cos(theta),
-                    r * Math.sin(phi) * Math.sin(theta),
-                    r * Math.cos(phi)
-                );
-            }
-            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-            const mat = new THREE.PointsMaterial({color: color, size: size, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending});
-            return new THREE.Points(geo, mat);
-        };
-        const starField1 = createStars(3000, 1.5, 0xffffff);
-        const starField2 = createStars(1500, 2.5, 0x00f2ff); // 赛博蓝星尘
-        scene.add(starField1);
-        scene.add(starField2);
-
-        // 2. 真实光影系统
-        const ambientLight = new THREE.AmbientLight(0x111122, 0.5); // 微弱的宇宙背景光
-        scene.add(ambientLight);
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
         
-        // 核心太阳光
-        const sunLight = new THREE.PointLight(0xfff5e6, 3, 2000);
-        sunLight.castShadow = true;
-        sunLight.shadow.mapSize.width = 2048;
-        sunLight.shadow.mapSize.height = 2048;
-        sunLight.shadow.bias = -0.0005;
-        scene.add(sunLight);
-
-        // 3. 高级纹理材质生成器 (Procedural Textures)
-        const generateNoiseTexture = (resolution, color1, color2) => {
-            const canvas = document.createElement('canvas');
-            canvas.width = resolution; canvas.height = resolution;
-            const context = canvas.getContext('2d');
-            for(let x=0; x<resolution; x+=4) {
-                for(let y=0; y<resolution; y+=4) {
-                    const mix = Math.random();
-                    context.fillStyle = mix > 0.5 ? color1 : color2;
-                    context.globalAlpha = Math.random();
-                    context.fillRect(x, y, 4, 4);
-                }
-            }
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-            return texture;
-        };
-
-        // 4. 构建太阳系
-        const planets = [];
+        // 星星粒子配置
+        const starCount = 400;
+        const stars = [];
+        const layers = 3; // 3层景深
         
-        const createPlanet = (name, radius, colors, distance, speed, detailLevel, hasAtmosphere = false) => {
-            // 行星主体 (高细分度)
-            const geo = new THREE.SphereGeometry(radius, detailLevel, detailLevel);
-            const tex = generateNoiseTexture(512, colors[0], colors[1]);
-            const mat = new THREE.MeshStandardMaterial({ 
-                map: tex, 
-                roughness: 0.8, 
-                metalness: 0.1,
-                bumpMap: tex,
-                bumpScale: 0.5
-            });
-            const mesh = new THREE.Mesh(geo, mat);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-
-            const obj = new THREE.Object3D();
-            mesh.position.x = distance;
-            
-            // 大气层效果 (Fresnel Glow)
-            if(hasAtmosphere) {
-                const atmosGeo = new THREE.SphereGeometry(radius * 1.1, 32, 32);
-                const atmosMat = new THREE.MeshPhysicalMaterial({
-                    color: colors[0],
-                    transparent: true,
-                    opacity: 0.3,
-                    side: THREE.BackSide,
-                    blending: THREE.AdditiveBlending,
-                    transmission: 0.9,
-                    roughness: 0
+        // 初始化星星
+        function initStars() {
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5 + 0.5,
+                    speed: Math.random() * 0.5 + 0.1,
+                    layer: Math.floor(Math.random() * layers),
+                    brightness: Math.random() * 0.7 + 0.3,
+                    pulse: Math.random() * Math.PI * 2
                 });
-                const atmosMesh = new THREE.Mesh(atmosGeo, atmosMat);
-                mesh.add(atmosMesh);
             }
-
-            obj.add(mesh);
-            scene.add(obj);
-            
-            // 极细微的轨道线
-            const orbitGeo = new THREE.RingGeometry(distance, distance + 0.2, 128);
-            const orbitMat = new THREE.MeshBasicMaterial({color: colors[0], side: THREE.DoubleSide, transparent:true, opacity:0.15});
-            const orbit = new THREE.Mesh(orbitGeo, orbitMat);
-            orbit.rotation.x = Math.PI / 2;
-            scene.add(orbit);
-
-            const planetData = { name: name, obj: obj, mesh: mesh, speed: speed, distance: distance, radius: radius };
-            planets.push(planetData);
-            return planetData;
-        };
-
-        // --- 恒星：太阳 ---
-        const sunGeo = new THREE.SphereGeometry(25, 64, 64);
-        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, wireframe: false });
-        const sun = new THREE.Mesh(sunGeo, sunMat);
-        scene.add(sun);
-        
-        // 太阳日冕层 (多层发光)
-        const createCorona = (scale, color, opacity) => {
-            const coronaGeo = new THREE.SphereGeometry(25 * scale, 64, 64);
-            const coronaMat = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: opacity, blending: THREE.AdditiveBlending});
-            const corona = new THREE.Mesh(coronaGeo, coronaMat);
-            sun.add(corona);
-        };
-        createCorona(1.2, 0xff5500, 0.3);
-        createCorona(1.5, 0xff2200, 0.15);
-
-        // --- 行星 ---
-        createPlanet("Mercury", 3.5, ['#888888', '#555555'], 50, 0.015, 32);
-        createPlanet("Venus", 6, ['#ffaa44', '#dd8822'], 80, 0.011, 64, true);
-        const earth = createPlanet("Earth", 6.5, ['#00f2ff', '#0044aa'], 120, 0.008, 64, true); // 赛博地球
-        createPlanet("Mars", 4.5, ['#ff3300', '#aa1100'], 160, 0.006, 64);
-        const jupiter = createPlanet("Jupiter", 14, ['#dda077', '#aa6644'], 230, 0.003, 64, true);
-        const saturn = createPlanet("Saturn", 11, ['#eecd88', '#bbaa77'], 320, 0.002, 64, true);
-
-        // --- 附加细节 ---
-        
-        // 1. 地球的月亮 (卫星系统)
-        const moonGeo = new THREE.SphereGeometry(1.5, 32, 32);
-        const moonMat = new THREE.MeshStandardMaterial({color: 0xaaaaaa, roughness: 0.9});
-        const moon = new THREE.Mesh(moonGeo, moonMat);
-        moon.castShadow = true; moon.receiveShadow = true;
-        const moonOrbit = new THREE.Object3D();
-        moon.position.x = 12; // 距离地球
-        moonOrbit.add(moon);
-        earth.mesh.add(moonOrbit);
-
-        // 2. 土星环 (高精度粒子环)
-        const ringGeo = new THREE.BufferGeometry();
-        const ringPos = [];
-        const ringColors = [];
-        const colorObj = new THREE.Color();
-        for(let i=0; i<5000; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const r = 16 + Math.random() * 12; // 内环16，外环28
-            ringPos.push(r * Math.cos(angle), (Math.random()-0.5)*0.5, r * Math.sin(angle));
-            
-            // 环的颜色渐变
-            colorObj.setHSL(0.1, 0.5, Math.random() * 0.5 + 0.3);
-            ringColors.push(colorObj.r, colorObj.g, colorObj.b);
         }
-        ringGeo.setAttribute('position', new THREE.Float32BufferAttribute(ringPos, 3));
-        ringGeo.setAttribute('color', new THREE.Float32BufferAttribute(ringColors, 3));
-        const ringMat = new THREE.PointsMaterial({size: 0.1, vertexColors: true, transparent:true, opacity: 0.8});
-        const saturnRing = new THREE.Points(ringGeo, ringMat);
-        saturnRing.rotation.x = Math.PI / 2 - 0.2;
-        saturnRing.rotation.y = 0.1;
-        saturn.mesh.add(saturnRing);
-
-        // 3. 小行星带 (火星与木星之间)
-        const asteroidGeo = new THREE.BufferGeometry();
-        const astPos = [];
-        for(let i=0; i<3000; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const r = 180 + Math.random() * 30; // 分布在180-210之间
-            astPos.push(
-                r * Math.cos(angle),
-                (Math.random() - 0.5) * 6, // 上下浮动
-                r * Math.sin(angle)
+        
+        // 绘制星星
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制背景渐变
+            const gradient = ctx.createRadialGradient(
+                canvas.width / 2, canvas.height / 2, 0,
+                canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
             );
-        }
-        asteroidGeo.setAttribute('position', new THREE.Float32BufferAttribute(astPos, 3));
-        const astMat = new THREE.PointsMaterial({color: 0x888888, size: 0.5});
-        const asteroidBelt = new THREE.Points(asteroidGeo, astMat);
-        scene.add(asteroidBelt);
-
-        // 5. 电影级摄像机控制
-        let currentTarget = null;
-        let cameraTargetPos = new THREE.Vector3(0, 200, 450);
-        let cameraLookAt = new THREE.Vector3(0, 0, 0);
-        let lookAtCurrent = new THREE.Vector3(0,0,0);
-        
-        const switchView = () => {
-            const rand = Math.random();
-            if(rand < 0.2) {
-                // 20% 太阳系全景上帝视角
-                currentTarget = null;
-                cameraTargetPos.set(0, 300 + Math.random()*200, 400 + Math.random()*200);
-            } else if (rand < 0.4) {
-                // 20% 穿越小行星带视角
-                currentTarget = null;
-                const angle = Math.random() * Math.PI * 2;
-                cameraTargetPos.set(190 * Math.cos(angle), 10, 190 * Math.sin(angle));
-            } else {
-                // 60% 伴飞特定行星
-                currentTarget = planets[Math.floor(Math.random() * planets.length)];
-            }
-        };
-
-        setInterval(switchView, 12000);
-        
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX - window.innerWidth/2) * 0.1;
-            mouseY = (e.clientY - window.innerHeight/2) * 0.1;
-        });
-
-        // 6. 主渲染循环
-        const clock = new THREE.Clock();
-        function animate() {
-            requestAnimationFrame(animate);
-            const delta = clock.getDelta();
-
-            // 太阳动效
-            sun.rotation.y += 0.002;
+            gradient.addColorStop(0, 'rgba(3, 5, 8, 0.2)');
+            gradient.addColorStop(0.5, 'rgba(3, 5, 8, 0.6)');
+            gradient.addColorStop(1, 'rgba(3, 5, 8, 0.9)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 行星运动
-            planets.forEach(p => {
-                p.obj.rotation.y += p.speed; // 公转
-                p.mesh.rotation.y += 0.01;   // 自转
-            });
-
-            // 月亮公转
-            moonOrbit.rotation.y += 0.05;
-
-            // 小行星带与星空缓慢旋转
-            asteroidBelt.rotation.y += 0.001;
-            starField1.rotation.y += 0.0001;
-            starField2.rotation.y -= 0.00005;
-
-            // 摄像机平滑追踪逻辑 (Lerp)
-            if(currentTarget) {
-                const pos = new THREE.Vector3();
-                currentTarget.mesh.getWorldPosition(pos);
+            // 更新并绘制每颗星星
+            stars.forEach(star => {
+                // 更新位置（不同层速度不同）
+                star.y += star.speed * (star.layer + 1) * 0.3;
+                star.pulse += 0.02;
                 
-                // 动态计算伴飞位置 (侧后方)
-                const idealPos = pos.clone().add(new THREE.Vector3(currentTarget.radius * 3, currentTarget.radius * 1.5, currentTarget.radius * 4));
-                cameraTargetPos.lerp(idealPos, 0.02);
-                cameraLookAt.copy(pos);
-            } else {
-                // 自由视角看中心
-                cameraLookAt.set(0,0,0);
-            }
-
-            // 缓动 LookAt
-            lookAtCurrent.lerp(cameraLookAt, 0.03);
+                // 循环边界
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+                
+                // 计算闪烁效果
+                const pulseFactor = Math.sin(star.pulse) * 0.3 + 0.7;
+                const currentBrightness = star.brightness * pulseFactor;
+                
+                // 绘制星星
+                ctx.beginPath();
+                
+                // 根据层级设置不同颜色和大小
+                let starColor;
+                let glowSize;
+                
+                switch(star.layer) {
+                    case 0: // 近景层 - 明亮蓝色
+                        starColor = `rgba(0, 242, 255, ${currentBrightness})`;
+                        glowSize = star.size * 3;
+                        break;
+                    case 1: // 中景层 - 紫色
+                        starColor = `rgba(112, 0, 255, ${currentBrightness * 0.7})`;
+                        glowSize = star.size * 2;
+                        break;
+                    case 2: // 远景层 - 粉色
+                        starColor = `rgba(255, 0, 122, ${currentBrightness * 0.5})`;
+                        glowSize = star.size * 1.5;
+                        break;
+                }
+                
+                // 绘制辉光效果
+                const glow = ctx.createRadialGradient(
+                    star.x, star.y, 0,
+                    star.x, star.y, glowSize
+                );
+                glow.addColorStop(0, starColor);
+                glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                ctx.fillStyle = glow;
+                ctx.arc(star.x, star.y, glowSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 绘制星星核心
+                ctx.beginPath();
+                ctx.fillStyle = starColor;
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 偶尔绘制星尾（流星效果）
+                if (Math.random() < 0.0005) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(0, 242, 255, 0.6)`;
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(star.x, star.y);
+                    ctx.lineTo(star.x - 30, star.y - 50);
+                    ctx.stroke();
+                }
+            });
             
-            // 加上鼠标漂移视差
-            const finalCamPos = cameraTargetPos.clone().add(new THREE.Vector3(mouseX, -mouseY, 0));
-            camera.position.lerp(finalCamPos, 0.02);
-            camera.lookAt(lookAtCurrent);
-
-            renderer.render(scene, camera);
+            // 绘制银河系光带
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(0, 242, 255, 0.05)';
+            ctx.lineWidth = 150;
+            ctx.moveTo(0, canvas.height * 0.7);
+            ctx.bezierCurveTo(
+                canvas.width * 0.3, canvas.height * 0.5,
+                canvas.width * 0.7, canvas.height * 0.8,
+                canvas.width, canvas.height * 0.6
+            );
+            ctx.stroke();
+            
+            // 添加星云效果
+            const nebula = ctx.createRadialGradient(
+                canvas.width * 0.3, canvas.height * 0.4, 0,
+                canvas.width * 0.3, canvas.height * 0.4, 300
+            );
+            nebula.addColorStop(0, 'rgba(112, 0, 255, 0.1)');
+            nebula.addColorStop(1, 'rgba(112, 0, 255, 0)');
+            ctx.fillStyle = nebula;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            requestAnimationFrame(drawStars);
         }
         
-        switchView();
-        animate();
-
+        // 窗口大小调整处理
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars.length = 0;
+            initStars();
         });
+        
+        // 鼠标移动交互 - 星星跟随鼠标产生涟漪
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // 鼠标附近的星星产生排斥效果
+            stars.forEach(star => {
+                const dx = star.x - mouseX;
+                const dy = star.y - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const force = (100 - distance) / 100 * 5;
+                    star.x += dx / distance * force;
+                    star.y += dy / distance * force;
+                }
+            });
+        });
+        
+        // 初始化并开始动画
+        initStars();
+        drawStars();
+        
+        console.log('星空粒子背景已加载');
     </script>
+
 
     <!-- 3D 标签球逻辑 -->
     <script>
