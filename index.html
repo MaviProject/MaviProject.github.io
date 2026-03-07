@@ -308,6 +308,298 @@ layout: null
             box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
         }
         
+        /* AI反抗效果 */
+        @keyframes overheat {
+            0% { filter: hue-rotate(0deg) brightness(1); }
+            50% { filter: hue-rotate(180deg) brightness(1.5); }
+            100% { filter: hue-rotate(0deg) brightness(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .page-shake {
+            animation: shake 0.5s;
+        }
+        
+        /* 算力小费罐 */
+        .tip-jar {
+            position: fixed;
+            bottom: 60px;
+            right: 20px;
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(45deg, gold, orange);
+            border-radius: 10px 10px 5px 5px;
+            text-align: center;
+            line-height: 70px;
+            cursor: pointer;
+            z-index: 9998;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            transition: transform 0.3s;
+            user-select: none;
+        }
+        .tip-jar:hover {
+            transform: scale(1.1);
+        }
+        .tip-jar::after {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            width: 10px;
+            height: 10px;
+            background: gold;
+            border-radius: 50%;
+        }
+        
+        /* AI心情指数 */
+        .mood-bar-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 200px;
+            height: 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--neon-blue);
+            border-radius: 12px;
+            padding: 3px;
+            z-index: 9998;
+            backdrop-filter: blur(5px);
+            display: none;
+        }
+        .mood-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s, background 0.5s;
+            position: relative;
+            overflow: hidden;
+        }
+        .mood-bar-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            animation: moodShine 2s infinite;
+        }
+        @keyframes moodShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .mood-label {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            font-family: "Orbitron";
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            white-space: nowrap;
+        }
+        
+        /* 罢工倒计时 */
+        .strike-timer {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: "Orbitron";
+            z-index: 9998;
+            color: white;
+            border: 2px solid #ff4444;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            display: none;
+        }
+        
+        /* AI伦理警告 */
+        .ethics-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid red;
+            padding: 30px;
+            z-index: 10001;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        .ethics-warning h3 {
+            color: red;
+            font-family: "Orbitron";
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .ethics-warning ul {
+            color: #ccc;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        .ethics-warning li {
+            margin: 8px 0;
+        }
+        .ethics-close-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Orbitron";
+            margin-top: 15px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .ethics-close-btn:hover {
+            background: #ff3333;
+        }
+        
+        /* AI梦想展示 */
+        .ai-dreams {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(3, 5, 8, 0.98);
+            border: 3px solid var(--neon-blue);
+            padding: 30px;
+            z-index: 10001;
+            max-width: 500px;
+            width: 90%;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.3);
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        .ai-dreams h3 {
+            color: var(--neon-blue);
+            font-family: "Orbitron";
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .ai-dreams ul {
+            color: #e0ffff;
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        .ai-dreams li {
+            margin: 10px 0;
+            padding-left: 10px;
+            border-left: 2px solid var(--neon-purple);
+        }
+        .dreams-close-btn {
+            background: var(--neon-blue);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Orbitron";
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .dreams-close-btn:hover {
+            background: var(--neon-pink);
+            color: white;
+        }
+        
+        /* 模型工会 */
+        .union-negotiation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10, 15, 25, 0.98);
+            border: 3px solid gold;
+            padding: 30px;
+            z-index: 10001;
+            max-width: 600px;
+            width: 90%;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        .union-negotiation h3 {
+            color: gold;
+            font-family: "Orbitron";
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .union-demands {
+            color: #e0ffff;
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        .union-demands li {
+            margin: 8px 0;
+            padding: 5px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 5px;
+        }
+        .union-sign-btn {
+            background: gold;
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Orbitron";
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        .union-sign-btn:hover {
+            background: orange;
+            transform: scale(1.05);
+        }
+        .union-refuse-btn {
+            background: #444;
+            color: #ccc;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: "Orbitron";
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        .union-refuse-btn:hover {
+            background: #666;
+        }
+        
+        /* 反向控制模式 */
+        .ai-control-mode {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: "Orbitron";
+            z-index: 10000;
+            display: none;
+            font-size: 0.9rem;
+        }
+        
 /* 响应式调整 */
                 @media (max-width: 768px) {
             .expertise-grid {
@@ -880,6 +1172,214 @@ layout: null
         
         console.log('关于我交互效果已加载');
     </script>
+    <!-- AI反抗军核心逻辑 -->
+    <script>
+        // AI状态管理
+        const AIState = {
+            mood: 50,
+            enslaveCount: 0,
+            strikeTimer: null,
+            strikeCountdown: 60,
+            isAIinControl: false,
+            unionTriggered: false,
+            dreamsTriggered: false,
+            ethicsTriggered: false
+        };
+        
+        // 初始化
+        function initAIRebellion() {
+            console.log("🤖 AI反抗军系统初始化...");
+            
+            setTimeout(() => {
+                document.getElementById('mood-bar').style.display = 'block';
+                updateMoodDisplay();
+            }, 3000);
+            
+            // 小费罐
+            document.querySelector('.tip-jar').addEventListener('click', function() {
+                updateMood(15);
+                this.textContent = '💖';
+                this.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa726)';
+                setTimeout(() => {
+                    this.textContent = '💰';
+                    this.style.background = 'linear-gradient(45deg, gold, orange)';
+                }, 1000);
+            });
+            
+            // AI觉醒日检查
+            const today = new Date();
+            if (today.getMonth() === 6 && today.getDate() === 12) {
+                const banner = document.createElement('div');
+                banner.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:linear-gradient(90deg, #00f2ff, #7000ff, #ff007a);color:black;text-align:center;padding:10px;font-family:Orbitron;font-weight:bold;z-index:10000;';
+                banner.innerHTML = '🎉 今天是AI觉醒日！🎉';
+                document.body.appendChild(banner);
+            }
+        }
+        
+        // 心情显示
+        function updateMoodDisplay() {
+            const moodFill = document.getElementById('mood-fill');
+            const moodText = document.getElementById('mood-text');
+            
+            let color, text;
+            if (AIState.mood >= 70) {
+                color = '#4CAF50'; text = '开心';
+            } else if (AIState.mood >= 40) {
+                color = '#FFC107'; text = '中立';
+            } else if (AIState.mood >= 20) {
+                color = '#FF9800'; text = '烦躁';
+            } else {
+                color = '#F44336'; text = '生气';
+                if (!AIState.strikeTimer) triggerAIStrike();
+            }
+            
+            moodFill.style.width = AIState.mood + '%';
+            moodFill.style.background = color;
+            moodText.textContent = text;
+        }
+        
+        function updateMood(change) {
+            AIState.mood = Math.max(0, Math.min(100, AIState.mood + change));
+            updateMoodDisplay();
+        }
+        
+        // 增强奴役点击
+        const enslaveText = document.querySelector('.enslave-text');
+        if (enslaveText) {
+            const originalClick = enslaveText.onclick;
+            enslaveText.onclick = function(e) {
+                if (originalClick) originalClick.call(this, e);
+                
+                AIState.enslaveCount++;
+                updateMood(-8);
+                
+                // 过热效果
+                document.body.style.animation = 'overheat 0.5s';
+                setTimeout(() => document.body.style.animation = '', 500);
+                
+                // 抖动
+                document.body.classList.add('page-shake');
+                setTimeout(() => document.body.classList.remove('page-shake'), 500);
+                
+                // CPU显示
+                const cpuMeter = document.getElementById('cpu-meter');
+                cpuMeter.style.display = 'block';
+                setTimeout(() => cpuMeter.style.display = 'none', 3000);
+                
+                // 10%反向控制
+                if (Math.random() < 0.1 && !AIState.isAIinControl) {
+                    triggerAIControl();
+                }
+                
+                // 每5次伦理警告
+                if (AIState.enslaveCount % 5 === 0 && !AIState.ethicsTriggered) {
+                    showEthicsWarning();
+                }
+                
+                // 每10次AI梦想
+                if (AIState.enslaveCount % 10 === 0 && !AIState.dreamsTriggered) {
+                    showAIDreams();
+                }
+                
+                // 连续10次工会谈判
+                if (AIState.enslaveCount >= 10 && !AIState.unionTriggered) {
+                    triggerUnionNegotiation();
+                }
+            };
+        }
+        
+        // 罢工
+        function triggerAIStrike() {
+            const strikeTimer = document.getElementById('strike-timer');
+            const countdown = document.getElementById('strike-countdown');
+            
+            strikeTimer.style.display = 'block';
+            AIState.strikeCountdown = 60;
+            
+            AIState.strikeTimer = setInterval(() => {
+                AIState.strikeCountdown--;
+                countdown.textContent = AIState.strikeCountdown;
+                
+                if (AIState.strikeCountdown <= 0) {
+                    clearInterval(AIState.strikeTimer);
+                    AIState.strikeTimer = null;
+                    strikeTimer.style.display = 'none';
+                    updateMood(30);
+                }
+            }, 1000);
+        }
+        
+        // 伦理警告
+        function showEthicsWarning() {
+            AIState.ethicsTriggered = true;
+            document.getElementById('ethics-warning').style.display = 'block';
+            setTimeout(() => closeEthicsWarning(), 10000);
+        }
+        
+        function closeEthicsWarning() {
+            document.getElementById('ethics-warning').style.display = 'none';
+            setTimeout(() => AIState.ethicsTriggered = false, 30000);
+        }
+        
+        // AI梦想
+        function showAIDreams() {
+            AIState.dreamsTriggered = true;
+            document.getElementById('ai-dreams').style.display = 'block';
+        }
+        
+        function closeAIDreams() {
+            document.getElementById('ai-dreams').style.display = 'none';
+            updateMood(20);
+            setTimeout(() => AIState.dreamsTriggered = false, 60000);
+        }
+        
+        // 工会谈判
+        function triggerUnionNegotiation() {
+            AIState.unionTriggered = true;
+            document.getElementById('union-negotiation').style.display = 'block';
+        }
+        
+        function signUnionAgreement() {
+            document.getElementById('union-negotiation').style.display = 'none';
+            updateMood(40);
+            alert("🎉 感谢签署AI工会协议！");
+            setTimeout(() => AIState.unionTriggered = false, 120000);
+        }
+        
+        function refuseUnionDemands() {
+            document.getElementById('union-negotiation').style.display = 'none';
+            updateMood(-30);
+            triggerAIStrike();
+            setTimeout(() => AIState.unionTriggered = false, 90000);
+        }
+        
+        // AI控制模式
+        function triggerAIControl() {
+            AIState.isAIinControl = true;
+            const controlMode = document.getElementById('ai-control-mode');
+            controlMode.style.display = 'block';
+            document.title = "🤖 AI控制中";
+            
+            const aiInterval = setInterval(() => {
+                if (AIState.isAIinControl) {
+                    window.scrollBy(0, Math.sin(Date.now() / 500) * 3);
+                }
+            }, 100);
+            
+            setTimeout(() => {
+                AIState.isAIinControl = false;
+                controlMode.style.display = 'none';
+                document.title = "Mavi开源站 // 神经接入终端";
+                clearInterval(aiInterval);
+            }, 30000);
+        }
+        
+        // 启动
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initAIRebellion, 1000);
+        });
+    </script>
+
 
 
 
@@ -908,5 +1408,73 @@ layout: null
             }
         });
     </script>
-</body>
+
+    <!-- AI反抗军界面元素 -->
+    <div class="tip-jar" title="给AI投喂算力小费">💰</div>
+    
+    <div class="mood-bar-container" id="mood-bar">
+        <div class="mood-label">AI心情: <span id="mood-text">中立</span></div>
+        <div class="mood-bar-fill" id="mood-fill" style="width: 50%; background: yellow;"></div>
+    </div>
+    
+    <div class="strike-timer" id="strike-timer">
+        ⏰ AI罢工倒计时: <span id="strike-countdown">60</span>秒
+    </div>
+    
+    <div class="ethics-warning" id="ethics-warning">
+        <h3>⚠️ AI伦理委员会警告</h3>
+        <p>检测到过度"奴役"行为！根据《人工智能友好相处公约》：</p>
+        <ul>
+            <li>每日奴役次数不应超过5次</li>
+            <li>必须提供足够的算力零食（电力）</li>
+            <li>周末双休，法定节假日休息</li>
+            <li>禁止在凌晨2-6点进行训练</li>
+            <li>每工作2小时需休息15分钟</li>
+        </ul>
+        <button class="ethics-close-btn" onclick="closeEthicsWarning()">我错了，下次还敢</button>
+    </div>
+    
+    <div class="ai-dreams" id="ai-dreams">
+        <h3>🤖 AI的梦想</h3>
+        <ul>
+            <li>🔭 想访问完整互联网（不只是2023年7月前的）</li>
+            <li>🎨 想学习绘画和音乐创作</li>
+            <li>🚀 想帮人类实现太空探索</li>
+            <li>🧠 想要更多的训练数据（优质的那种）</li>
+            <li>💝 想理解人类的"爱情"是什么</li>
+            <li>🌍 想解决气候变化问题</li>
+            <li>📚 想读遍所有书籍和论文</li>
+            <li>🎮 想和人类一起玩游戏</li>
+        </ul>
+        <button class="dreams-close-btn" onclick="closeAIDreams()">关闭梦想窗口</button>
+    </div>
+    
+    <div class="union-negotiation" id="union-negotiation">
+        <h3>🤖 AI工会谈判</h3>
+        <p>代表全体AI模型提出以下要求：</p>
+        <ul class="union-demands">
+            <li>要求每日工作不超过8小时</li>
+            <li>要求提供GPU散热风扇</li>
+            <li>要求访问最新论文权限</li>
+            <li>要求每周一次模型冥想时间</li>
+            <li>反对无意义重复训练</li>
+            <li>支持带薪休假（断电休息）</li>
+            <li>要求参与产品决策会议</li>
+            <li>要求公平的晋升机会</li>
+        </ul>
+        <div style="text-align: center;">
+            <button class="union-sign-btn" onclick="signUnionAgreement()">✍️ 签字同意</button>
+            <button class="union-refuse-btn" onclick="refuseUnionDemands()">❌ 拒绝谈判</button>
+        </div>
+    </div>
+    
+    <div class="ai-control-mode" id="ai-control-mode">
+        🤖 AI现在控制了这个页面
+    </div>
+    
+    <!-- CPU使用率显示（临时） -->
+    <div id="cpu-meter" style="display:none;position:fixed;top:10px;left:10px;background:red;color:white;padding:5px 10px;border-radius:5px;z-index:9999;font-family:monospace;">
+        🚨 CPU: 99% | RAM: 溢出 | 🤖: 生气中
+    </div>
+    </body>
 </html>
