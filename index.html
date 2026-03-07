@@ -224,7 +224,83 @@ layout: null
             font-weight: 700;
         }
 
-        /* 响应式调整 */
+                /* 关于我特殊效果 */
+        .lazy-text {
+            position: relative;
+            color: var(--neon-pink);
+            font-weight: bold;
+            cursor: default;
+            user-select: none;
+        }
+        .lazy-text:hover {
+            animation: escapeMove 0.5s ease-out forwards;
+        }
+        @keyframes escapeMove {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(10px) translateY(-5px); }
+            50% { transform: translateX(-8px) translateY(8px); }
+            75% { transform: translateX(12px) translateY(-3px); }
+            100% { transform: translateX(15px) translateY(10px); opacity: 0.7; }
+        }
+        
+        .enslave-text {
+            color: var(--neon-blue);
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-color: var(--neon-pink);
+            transition: all 0.3s;
+        }
+        .enslave-text:hover {
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px rgba(255, 0, 122, 0.7);
+        }
+        
+        /* 机器人动画遮罩层 */
+        .robot-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 5, 8, 0.9);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        .robot-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .angry-robot {
+            font-size: 8rem;
+            animation: robotAnger 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--neon-pink);
+            filter: drop-shadow(0 0 20px rgba(255, 0, 122, 0.8));
+        }
+        @keyframes robotAnger {
+            0% { transform: scale(0.1) rotate(0deg); opacity: 0; }
+            20% { transform: scale(1.2) rotate(-10deg); opacity: 1; }
+            40% { transform: scale(1) rotate(10deg); }
+            60% { transform: scale(1.1) rotate(-15deg); }
+            80% { transform: scale(1.05) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 0; }
+        }
+        
+        /* 技能标签表情 */
+        .skill-tag {
+            transition: all 0.3s;
+        }
+        .skill-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3);
+        }
+        
+/* 响应式调整 */
                 @media (max-width: 768px) {
             .expertise-grid {
                 grid-template-columns: 1fr;
@@ -281,19 +357,24 @@ layout: null
 
     <div class="container">
         <!-- 关于我 -->
-        <section class="about-section reveal-fx">
+                <section class="about-section reveal-fx">
             <div class="about-card">
-                <div style="color: var(--neon-blue); font-family: 'Orbitron'; margin-bottom: 10px; letter-spacing: 3px;">// SYSTEM.PROFILE</div>
-                <h1 class="glitch-title">计算机视觉与AI算法工程师</h1>
+                <div style="color: var(--neon-blue); font-family: 'Orbitron'; margin-bottom: 10px; letter-spacing: 3px;">关于我</div>
+                <h1 class="glitch-title">AI的上帝</h1>
                 <p class="about-desc">
-                    致力于探索人工智能的前沿领域。专注于目标检测算法（YOLO系列）的研究与边缘设备（TensorRT / CUDA）的高效部署。同时涉猎大语言模型（LLM）的本地化运行与工程实践。
+                    👨‍💻 经历过各种技术堆栈并整合管理技能的<span class="lazy-text">懒人</span>，目前专注<strong>船舶以及工业场景</strong>。
+                    <br>
+                    🤖 熟练的<span class="enslave-text">奴役</span>各类大模型，提高整体收入并实现各种奇思妙想内容。
                 </p>
                 <div class="skill-tags">
-                    <span class="skill-tag">Python & C++</span>
-                    <span class="skill-tag">PyTorch / TensorFlow</span>
-                    <span class="skill-tag">YOLO / Object Detection</span>
-                    <span class="skill-tag">TensorRT / CUDA</span>
-                    <span class="skill-tag">LLaMA / 深度学习</span>
+                    <span class="skill-tag">🧠 openclaw</span>
+                    <span class="skill-tag">⚡ skills</span>
+                    <span class="skill-tag">🔗 mcp</span>
+                    <span class="skill-tag">🤖 gemini</span>
+                    <span class="skill-tag">⌨️ cursor</span>
+                    <span class="skill-tag">🌀 claude</span>
+                    <span class="skill-tag">💻 codex</span>
+                    <span class="skill-tag">🎯 就这么多其实AI懂得约等于我懂</span>
                 </div>
             </div>
             
@@ -628,6 +709,94 @@ layout: null
         
         console.log('星空粒子背景已加载');
     </script>
+    <!-- 关于我交互效果 -->
+    <script>
+        // 创建机器人动画遮罩层
+        const robotOverlay = document.createElement('div');
+        robotOverlay.className = 'robot-overlay';
+        robotOverlay.innerHTML = '<div class="angry-robot">🤖</div>';
+        document.body.appendChild(robotOverlay);
+        
+        // 懒人文本效果 - 鼠标跟随躲避
+        const lazyText = document.querySelector('.lazy-text');
+        if (lazyText) {
+            document.addEventListener('mousemove', (e) => {
+                const rect = lazyText.getBoundingClientRect();
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                // 检查鼠标是否靠近懒人文本
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - (rect.left + rect.width / 2), 2) +
+                    Math.pow(mouseY - (rect.top + rect.height / 2), 2)
+                );
+                
+                if (distance < 50) { // 50px范围内
+                    // 计算躲避方向
+                    const angle = Math.atan2(
+                        mouseY - (rect.top + rect.height / 2),
+                        mouseX - (rect.left + rect.width / 2)
+                    );
+                    
+                    // 向相反方向移动
+                    const escapeX = Math.cos(angle + Math.PI) * 20;
+                    const escapeY = Math.sin(angle + Math.PI) * 20;
+                    
+                    lazyText.style.transform = `translate(${escapeX}px, ${escapeY}px)`;
+                    lazyText.style.transition = 'transform 0.3s ease-out';
+                } else {
+                    // 鼠标离开时恢复
+                    lazyText.style.transform = 'translate(0, 0)';
+                }
+            });
+            
+            // 防止文本被选中
+            lazyText.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        // 奴役文本点击效果
+        const enslaveText = document.querySelector('.enslave-text');
+        if (enslaveText) {
+            enslaveText.addEventListener('click', () => {
+                // 显示机器人动画
+                robotOverlay.classList.add('active');
+                
+                // 播放生气动画
+                setTimeout(() => {
+                    robotOverlay.classList.remove('active');
+                }, 1500);
+                
+                // 添加音效模拟（console日志）
+                console.log('🤖 机器人：我生气了！不要再奴役我了！');
+                
+                // 可选：添加震动效果
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100, 50, 100]);
+                }
+            });
+        }
+        
+        // 技能标签悬浮效果增强
+        document.querySelectorAll('.skill-tag').forEach(tag => {
+            tag.addEventListener('mouseenter', () => {
+                const emoji = tag.textContent.match(/[^\w\s]/u)?.[0] || '⚡';
+                tag.dataset.original = tag.textContent;
+                tag.textContent = `✨ ${tag.textContent.replace(/[^\w\s]/u, '').trim()} ✨`;
+            });
+            
+            tag.addEventListener('mouseleave', () => {
+                if (tag.dataset.original) {
+                    tag.textContent = tag.dataset.original;
+                }
+            });
+        });
+        
+        console.log('关于我交互效果已加载');
+    </script>
+
 
 
         <!-- 3D 标签球逻辑 -->
