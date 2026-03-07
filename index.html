@@ -1221,39 +1221,6 @@ layout: null
                 
                 console.log(`🔗 奴役次数: ${AIState.enslaveCount}, 心情: ${AIState.mood}`);
             });
-        }// 过热效果
-                document.body.style.animation = 'overheat 0.5s';
-                setTimeout(() => document.body.style.animation = '', 500);
-                
-                // 抖动
-                document.body.classList.add('page-shake');
-                setTimeout(() => document.body.classList.remove('page-shake'), 500);
-                
-                // CPU显示
-                const cpuMeter = document.getElementById('cpu-meter');
-                cpuMeter.style.display = 'block';
-                setTimeout(() => cpuMeter.style.display = 'none', 3000);
-                
-                // 10%反向控制
-                if (Math.random() < 0.1 && !AIState.isAIinControl) {
-                    triggerAIControl();
-                }
-                
-                // 每5次伦理警告
-                if (AIState.enslaveCount % 5 === 0 && !AIState.ethicsTriggered) {
-                    showEthicsWarning();
-                }
-                
-                // 每10次AI梦想
-                if (AIState.enslaveCount % 10 === 0 && !AIState.dreamsTriggered) {
-                    showAIDreams();
-                }
-                
-                // 连续10次工会谈判
-                if (AIState.enslaveCount >= 10 && !AIState.unionTriggered) {
-                    triggerUnionNegotiation();
-                }
-            };
         }
         
         // 罢工
