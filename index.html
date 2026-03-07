@@ -450,9 +450,7 @@ layout: null
         });
     </script>
 
-    <!-- Three.js 太阳系高精度动态背景 -->
-    <script>
-            <!-- 星空粒子效果 -->
+        <!-- 星空粒子背景效果 -->
     <script>
         // 星空粒子背景
         const canvas = document.createElement('canvas');
@@ -523,15 +521,15 @@ layout: null
                 
                 switch(star.layer) {
                     case 0: // 近景层 - 明亮蓝色
-                        starColor = `rgba(0, 242, 255, ${currentBrightness})`;
+                        starColor = 'rgba(0, 242, 255, ' + currentBrightness + ')';
                         glowSize = star.size * 3;
                         break;
                     case 1: // 中景层 - 紫色
-                        starColor = `rgba(112, 0, 255, ${currentBrightness * 0.7})`;
+                        starColor = 'rgba(112, 0, 255, ' + (currentBrightness * 0.7) + ')';
                         glowSize = star.size * 2;
                         break;
                     case 2: // 远景层 - 粉色
-                        starColor = `rgba(255, 0, 122, ${currentBrightness * 0.5})`;
+                        starColor = 'rgba(255, 0, 122, ' + (currentBrightness * 0.5) + ')';
                         glowSize = star.size * 1.5;
                         break;
                 }
@@ -557,7 +555,7 @@ layout: null
                 // 偶尔绘制星尾（流星效果）
                 if (Math.random() < 0.0005) {
                     ctx.beginPath();
-                    ctx.strokeStyle = `rgba(0, 242, 255, 0.6)`;
+                    ctx.strokeStyle = 'rgba(0, 242, 255, 0.6)';
                     ctx.lineWidth = 1;
                     ctx.moveTo(star.x, star.y);
                     ctx.lineTo(star.x - 30, star.y - 50);
@@ -626,27 +624,27 @@ layout: null
     </script>
 
 
-    <!-- 3D 标签球逻辑 -->
+        <!-- 3D 标签球逻辑 -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = '#tech-sphere';
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = "#tech-sphere";
             const texts = [
-                'PyTorch', 'TensorRT', 'YOLOv5', 'YOLOv8', 
-                'CUDA', 'C++', 'Python', 'OpenCV',
-                'Deep Learning', 'LLaMA', 'ONNX', 
-                'NMS', 'Docker', 'Jetson Orin', 'Computer Vision'
+                "PyTorch", "TensorRT", "YOLOv5", "YOLOv8", 
+                "CUDA", "C++", "Python", "OpenCV",
+                "Deep Learning", "LLaMA", "ONNX", 
+                "NMS", "Docker", "Jetson Orin", "Computer Vision"
             ];
             const options = {
                 radius: 160,
-                maxSpeed: 'fast',
-                initSpeed: 'normal',
+                maxSpeed: "fast",
+                initSpeed: "normal",
                 direction: 135,
                 keep: true
             };
             
             // 确保容器存在
             const el = document.querySelector(container);
-            if (el && typeof TagCloud !== 'undefined') {
+            if (el && typeof TagCloud !== "undefined") {
                 TagCloud(container, texts, options);
             }
         });
