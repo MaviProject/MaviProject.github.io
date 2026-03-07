@@ -225,16 +225,24 @@ layout: null
         }
 
                 /* 关于我特殊效果 */
-        .lazy-text {
+                .lazy-text {
             position: relative;
             color: var(--neon-pink);
             font-weight: bold;
             cursor: default;
             user-select: none;
+            display: inline-block;
+            padding: 0 4px;
+            border-radius: 3px;
+            transition: all 0.3s;
+            animation: lazyPulse 3s infinite;
         }
-        .lazy-text:hover {
-            animation: escapeMove 0.5s ease-out forwards;
+        @keyframes lazyPulse {
+            0% { text-shadow: 0 0 5px rgba(255, 0, 122, 0.5); }
+            50% { text-shadow: 0 0 15px rgba(255, 0, 122, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 0, 122, 0.5); }
         }
+        
         @keyframes escapeMove {
             0% { transform: translateX(0) translateY(0); }
             25% { transform: translateX(10px) translateY(-5px); }
@@ -717,47 +725,123 @@ layout: null
         robotOverlay.innerHTML = '<div class="angry-robot">🤖</div>';
         document.body.appendChild(robotOverlay);
         
-        // 懒人文本效果 - 鼠标跟随躲避
+                // 懒人文本效果 - 真正的鼠标逃避
         const lazyText = document.querySelector('.lazy-text');
         if (lazyText) {
+            // 初始位置记录
+            let originalX = 0, originalY = 0;
+            let isEscaping = false;
+            
+            // 获取初始位置（DOM加载后）
+            setTimeout(() => {
+                const rect = lazyText.getBoundingClientRect();
+                originalX = rect.left;
+                originalY = rect.top;
+            }, 100);
+            
+            // 鼠标移动监听
             document.addEventListener('mousemove', (e) => {
+                if (!lazyText) return;
+                
                 const rect = lazyText.getBoundingClientRect();
                 const mouseX = e.clientX;
                 const mouseY = e.clientY;
                 
-                // 检查鼠标是否靠近懒人文本
+                // 计算鼠标到文本中心的距离
+                const textCenterX = rect.left + rect.width / 2;
+                const textCenterY = rect.top + rect.height / 2;
                 const distance = Math.sqrt(
-                    Math.pow(mouseX - (rect.left + rect.width / 2), 2) +
-                    Math.pow(mouseY - (rect.top + rect.height / 2), 2)
+                    Math.pow(mouseX - textCenterX, 2) +
+                    Math.pow(mouseY - textCenterY, 2)
                 );
                 
-                if (distance < 50) { // 50px范围内
-                    // 计算躲避方向
+                // 如果鼠标在30px范围内，触发逃避
+                const escapeRadius = 30;
+                if (distance < escapeRadius && !isEscaping) {
+                    isEscaping = true;
+                    
+                    // 计算逃避方向（远离鼠标）
                     const angle = Math.atan2(
-                        mouseY - (rect.top + rect.height / 2),
-                        mouseX - (rect.left + rect.width / 2)
+                        mouseY - textCenterY,
+                        mouseX - textCenterX
                     );
                     
-                    // 向相反方向移动
-                    const escapeX = Math.cos(angle + Math.PI) * 20;
-                    const escapeY = Math.sin(angle + Math.PI) * 20;
+                    // 逃避距离和方向
+                    const escapeDistance = 40 + Math.random() * 20; // 40-60px
+                    const escapeX = Math.cos(angle + Math.PI) * escapeDistance;
+                    const escapeY = Math.sin(angle + Math.PI) * escapeDistance;
                     
+                    // 应用逃避动画
                     lazyText.style.transform = `translate(${escapeX}px, ${escapeY}px)`;
-                    lazyText.style.transition = 'transform 0.3s ease-out';
-                } else {
-                    // 鼠标离开时恢复
-                    lazyText.style.transform = 'translate(0, 0)';
+                    lazyText.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    lazyText.style.zIndex = '100';
+                    
+                    // 逃避后恢复
+                    setTimeout(() => {
+                        lazyText.style.transform = 'translate(0, 0)';
+                        lazyText.style.transition = 'transform 0.5s ease-out';
+                        setTimeout(() => {
+                            isEscaping = false;
+                            lazyText.style.zIndex = '';
+                        }, 500);
+                    }, 800 + Math.random() * 400); // 0.8-1.2秒后恢复
                 }
             });
+            
+            // 触摸设备支持
+            lazyText.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                
+                // 触摸时立即逃避
+                const rect = lazyText.getBoundingClientRect();
+                const touch = e.touches[0];
+                const touchX = touch.clientX;
+                const touchY = touch.clientY;
+                
+                const textCenterX = rect.left + rect.width / 2;
+                const textCenterY = rect.top + rect.height / 2;
+                const angle = Math.atan2(
+                    touchY - textCenterY,
+                    touchX - textCenterX
+                );
+                
+                const escapeDistance = 60;
+                const escapeX = Math.cos(angle + Math.PI) * escapeDistance;
+                const escapeY = Math.sin(angle + Math.PI) * escapeDistance;
+                
+                lazyText.style.transform = `translate(${escapeX}px, ${escapeY}px)`;
+                lazyText.style.transition = 'transform 0.2s ease-out';
+                
+                setTimeout(() => {
+                    lazyText.style.transform = 'translate(0, 0)';
+                    lazyText.style.transition = 'transform 0.8s ease-out';
+                }, 300);
+                
+                return false;
+            }, { passive: false });
             
             // 防止文本被选中
             lazyText.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 return false;
             });
+            
+            lazyText.addEventListener('selectstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            // 防止拖拽
+            lazyText.setAttribute('draggable', 'false');
+            lazyText.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            console.log('懒人文本逃避效果已启用');
         }
         
-        // 奴役文本点击效果
+// 奴役文本点击效果
         const enslaveText = document.querySelector('.enslave-text');
         if (enslaveText) {
             enslaveText.addEventListener('click', () => {
