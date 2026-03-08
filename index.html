@@ -1084,6 +1084,18 @@ layout: null
         });
         
         // 初始化
+        // AI状态管理
+        const AIState = {
+            mood: 50,
+            enslaveCount: 0,
+            strikeTimer: null,
+            strikeCountdown: 60,
+            isAIinControl: false,
+            unionTriggered: false,
+            dreamsTriggered: false,
+            ethicsTriggered: false
+        };
+        
         function initAIRebellion() {
             console.log("🤖 AI反抗军系统初始化...");
             
