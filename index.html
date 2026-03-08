@@ -964,43 +964,37 @@ layout: null
             
             // 更新并绘制每颗星星
             stars.forEach(star => {
-                // 更新位置（不同层速度不同）
                 star.y += star.speed * (star.layer + 1) * 0.3;
                 star.pulse += 0.02;
                 
-                // 循环边界
                 if (star.y > canvas.height) {
                     star.y = 0;
                     star.x = Math.random() * canvas.width;
                 }
                 
-                // 计算闪烁效果
                 const pulseFactor = Math.sin(star.pulse) * 0.3 + 0.7;
                 const currentBrightness = star.brightness * pulseFactor;
                 
-                // 绘制星星
                 ctx.beginPath();
                 
-                // 根据层级设置不同颜色和大小
                 let starColor;
                 let glowSize;
                 
                 switch(star.layer) {
-                    case 0: // 近景层 - 明亮蓝色
+                    case 0:
                         starColor = 'rgba(0, 242, 255, ' + currentBrightness + ')';
                         glowSize = star.size * 3;
                         break;
-                    case 1: // 中景层 - 紫色
+                    case 1:
                         starColor = 'rgba(112, 0, 255, ' + (currentBrightness * 0.7) + ')';
                         glowSize = star.size * 2;
                         break;
-                    case 2: // 远景层 - 粉色
+                    case 2:
                         starColor = 'rgba(255, 0, 122, ' + (currentBrightness * 0.5) + ')';
                         glowSize = star.size * 1.5;
                         break;
                 }
                 
-                // 绘制辉光效果
                 const glow = ctx.createRadialGradient(
                     star.x, star.y, 0,
                     star.x, star.y, glowSize
@@ -1012,13 +1006,11 @@ layout: null
                 ctx.arc(star.x, star.y, glowSize, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // 绘制星星核心
                 ctx.beginPath();
                 ctx.fillStyle = starColor;
                 ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // 偶尔绘制星尾（流星效果）
                 if (Math.random() < 0.0005) {
                     ctx.beginPath();
                     ctx.strokeStyle = 'rgba(0, 242, 255, 0.6)';
@@ -1029,7 +1021,6 @@ layout: null
                 }
             });
             
-            // 绘制银河系光带
             ctx.beginPath();
             ctx.strokeStyle = 'rgba(0, 242, 255, 0.05)';
             ctx.lineWidth = 150;
@@ -1041,7 +1032,6 @@ layout: null
             );
             ctx.stroke();
             
-            // 添加星云效果
             const nebula = ctx.createRadialGradient(
                 canvas.width * 0.3, canvas.height * 0.4, 0,
                 canvas.width * 0.3, canvas.height * 0.4, 300
@@ -1054,7 +1044,6 @@ layout: null
             requestAnimationFrame(drawStars);
         }
         
-        // 窗口大小调整处理
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -1062,14 +1051,11 @@ layout: null
             initStars();
         });
         
-        // 鼠标移动交互 - 星星跟随鼠标产生涟漪
         let mouseX = 0, mouseY = 0;
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
-            mouseX = e.clientX;
             mouseY = e.clientY;
             
-            // 鼠标附近的星星产生排斥效果
             stars.forEach(star => {
                 const dx = star.x - mouseX;
                 const dy = star.y - mouseY;
@@ -1083,8 +1069,112 @@ layout: null
             });
         });
         
-        // 初始化
-        // AI状态管理
+        initStars();
+        drawStars();
+        console.log('星空粒子背景已加载');
+    </script>
+
+    <!-- 关于我交互效果 (简化版) -->
+    <script>
+        const lazyText = document.querySelector('.lazy-text');
+        if (lazyText) {
+            let isEscaping = false;
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!lazyText || isEscaping) return;
+                
+                const rect = lazyText.getBoundingClientRect();
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                const textCenterX = rect.left + rect.width / 2;
+                const textCenterY = rect.top + rect.height / 2;
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - textCenterX, 2) +
+                    Math.pow(mouseY - textCenterY, 2)
+                );
+                
+                const escapeRadius = 30;
+                if (distance < escapeRadius) {
+                    isEscaping = true;
+                    
+                    const angle = Math.atan2(
+                        mouseY - textCenterY,
+                        mouseX - textCenterX
+                    );
+                    
+                    const escapeDistance = 40 + Math.random() * 20;
+                    const escapeX = Math.cos(angle + Math.PI) * escapeDistance;
+                    const escapeY = Math.sin(angle + Math.PI) * escapeDistance;
+                    
+                    lazyText.style.transform = `translate(${escapeX}px, ${escapeY}px)`;
+                    lazyText.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    
+                    setTimeout(() => {
+                        lazyText.style.transform = 'translate(0, 0)';
+                        lazyText.style.transition = 'transform 0.5s ease-out';
+                        setTimeout(() => {
+                            isEscaping = false;
+                        }, 500);
+                    }, 800 + Math.random() * 400);
+                }
+            });
+            
+            lazyText.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                
+                const rect = lazyText.getBoundingClientRect();
+                const touch = e.touches[0];
+                const touchX = touch.clientX;
+                const touchY = touch.clientY;
+                
+                const textCenterX = rect.left + rect.width / 2;
+                const textCenterY = rect.top + rect.height / 2;
+                const angle = Math.atan2(
+                    touchY - textCenterY,
+                    touchX - textCenterX
+                );
+                
+                const escapeDistance = 60;
+                const escapeX = Math.cos(angle + Math.PI) * escapeDistance;
+                const escapeY = Math.sin(angle + Math.PI) * escapeDistance;
+                
+                lazyText.style.transform = `translate(${escapeX}px, ${escapeY}px)`;
+                lazyText.style.transition = 'transform 0.2s ease-out';
+                
+                setTimeout(() => {
+                    lazyText.style.transform = 'translate(0, 0)';
+                    lazyText.style.transition = 'transform 0.8s ease-out';
+                }, 300);
+                
+                return false;
+            }, { passive: false });
+            
+            lazyText.addEventListener('mousedown', (e) => { e.preventDefault(); return false; });
+            lazyText.addEventListener('selectstart', (e) => { e.preventDefault(); return false; });
+            lazyText.setAttribute('draggable', 'false');
+            lazyText.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+        }
+        
+        document.querySelectorAll('.skill-tag').forEach(tag => {
+            tag.addEventListener('mouseenter', () => {
+                const emoji = tag.textContent.match(/[^\w\s]/u)?.[0] || '⚡';
+                tag.dataset.original = tag.textContent;
+                tag.textContent = `✨ ${tag.textContent.replace(/[^\w\s]/u, '').trim()} ✨`;
+            });
+            
+            tag.addEventListener('mouseleave', () => {
+                if (tag.dataset.original) {
+                    tag.textContent = tag.dataset.original;
+                }
+            });
+        });
+        
+        console.log('关于我交互效果已加载（简化版）');
+    </script>
+
+    <!-- AI反抗军核心逻辑 -->
+    <script>
         const AIState = {
             mood: 50,
             enslaveCount: 0,
@@ -1104,18 +1194,19 @@ layout: null
                 updateMoodDisplay();
             }, 3000);
             
-            // 小费罐
-            document.querySelector('.tip-jar').addEventListener('click', function() {
-                updateMood(15);
-                this.textContent = '💖';
-                this.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa726)';
-                setTimeout(() => {
-                    this.textContent = '💰';
-                    this.style.background = 'linear-gradient(45deg, gold, orange)';
-                }, 1000);
-            });
+            const tipJar = document.querySelector('.tip-jar');
+            if (tipJar) {
+                tipJar.addEventListener('click', function() {
+                    updateMood(15);
+                    this.textContent = '💖';
+                    this.style.background = 'linear-gradient(45deg, #ff6b6b, #ffa726)';
+                    setTimeout(() => {
+                        this.textContent = '💰';
+                        this.style.background = 'linear-gradient(45deg, gold, orange)';
+                    }, 1000);
+                });
+            }
             
-            // AI觉醒日检查
             const today = new Date();
             if (today.getMonth() === 6 && today.getDate() === 12) {
                 const banner = document.createElement('div');
@@ -1125,10 +1216,10 @@ layout: null
             }
         }
         
-        // 心情显示
         function updateMoodDisplay() {
             const moodFill = document.getElementById('mood-fill');
             const moodText = document.getElementById('mood-text');
+            if (!moodFill || !moodText) return;
             
             let color, text;
             if (AIState.mood >= 70) {
@@ -1152,42 +1243,36 @@ layout: null
             updateMoodDisplay();
         }
         
-                // 增强奴役点击
-        const enslaveText = document.querySelector('.enslave-text');
-        if (enslaveText) {
-            enslaveText.addEventListener('click', function(e) {
+        const enslaveTextEl = document.querySelector('.enslave-text');
+        if (enslaveTextEl) {
+            enslaveTextEl.addEventListener('click', function(e) {
                 AIState.enslaveCount++;
                 updateMood(-8);
                 
-                // 过热效果
                 document.body.style.animation = 'overheat 0.5s';
                 setTimeout(() => document.body.style.animation = '', 500);
                 
-                // 抖动
                 document.body.classList.add('page-shake');
                 setTimeout(() => document.body.classList.remove('page-shake'), 500);
                 
-                // CPU显示
                 const cpuMeter = document.getElementById('cpu-meter');
-                cpuMeter.style.display = 'block';
-                setTimeout(() => cpuMeter.style.display = 'none', 3000);
+                if (cpuMeter) {
+                    cpuMeter.style.display = 'block';
+                    setTimeout(() => cpuMeter.style.display = 'none', 3000);
+                }
                 
-                // 10%反向控制
                 if (Math.random() < 0.1 && !AIState.isAIinControl) {
                     triggerAIControl();
                 }
                 
-                // 每5次伦理警告
                 if (AIState.enslaveCount % 5 === 0 && !AIState.ethicsTriggered) {
                     showEthicsWarning();
                 }
                 
-                // 每10次AI梦想
                 if (AIState.enslaveCount % 10 === 0 && !AIState.dreamsTriggered) {
                     showAIDreams();
                 }
                 
-                // 连续10次工会谈判
                 if (AIState.enslaveCount >= 10 && !AIState.unionTriggered) {
                     triggerUnionNegotiation();
                 }
@@ -1196,10 +1281,10 @@ layout: null
             });
         }
         
-        // 罢工
         function triggerAIStrike() {
             const strikeTimer = document.getElementById('strike-timer');
             const countdown = document.getElementById('strike-countdown');
+            if (!strikeTimer || !countdown) return;
             
             strikeTimer.style.display = 'block';
             AIState.strikeCountdown = 60;
@@ -1217,55 +1302,58 @@ layout: null
             }, 1000);
         }
         
-        // 伦理警告
         function showEthicsWarning() {
             AIState.ethicsTriggered = true;
-            document.getElementById('ethics-warning').style.display = 'block';
+            const el = document.getElementById('ethics-warning');
+            if (el) el.style.display = 'block';
             setTimeout(() => closeEthicsWarning(), 10000);
         }
         
         function closeEthicsWarning() {
-            document.getElementById('ethics-warning').style.display = 'none';
+            const el = document.getElementById('ethics-warning');
+            if (el) el.style.display = 'none';
             setTimeout(() => AIState.ethicsTriggered = false, 30000);
         }
         
-        // AI梦想
         function showAIDreams() {
             AIState.dreamsTriggered = true;
-            document.getElementById('ai-dreams').style.display = 'block';
+            const el = document.getElementById('ai-dreams');
+            if (el) el.style.display = 'block';
         }
         
         function closeAIDreams() {
-            document.getElementById('ai-dreams').style.display = 'none';
+            const el = document.getElementById('ai-dreams');
+            if (el) el.style.display = 'none';
             updateMood(20);
             setTimeout(() => AIState.dreamsTriggered = false, 60000);
         }
         
-        // 工会谈判
         function triggerUnionNegotiation() {
             AIState.unionTriggered = true;
-            document.getElementById('union-negotiation').style.display = 'block';
+            const el = document.getElementById('union-negotiation');
+            if (el) el.style.display = 'block';
         }
         
         function signUnionAgreement() {
-            document.getElementById('union-negotiation').style.display = 'none';
+            const el = document.getElementById('union-negotiation');
+            if (el) el.style.display = 'none';
             updateMood(40);
             alert("🎉 感谢签署AI工会协议！");
             setTimeout(() => AIState.unionTriggered = false, 120000);
         }
         
         function refuseUnionDemands() {
-            document.getElementById('union-negotiation').style.display = 'none';
+            const el = document.getElementById('union-negotiation');
+            if (el) el.style.display = 'none';
             updateMood(-30);
             triggerAIStrike();
             setTimeout(() => AIState.unionTriggered = false, 90000);
         }
         
-        // AI控制模式
         function triggerAIControl() {
             AIState.isAIinControl = true;
             const controlMode = document.getElementById('ai-control-mode');
-            controlMode.style.display = 'block';
+            if (controlMode) controlMode.style.display = 'block';
             document.title = "🤖 AI控制中";
             
             const aiInterval = setInterval(() => {
@@ -1276,22 +1364,18 @@ layout: null
             
             setTimeout(() => {
                 AIState.isAIinControl = false;
-                controlMode.style.display = 'none';
+                if (controlMode) controlMode.style.display = 'none';
                 document.title = "Mavi开源站 // 神经接入终端";
                 clearInterval(aiInterval);
             }, 30000);
         }
         
-        // 启动
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(initAIRebellion, 1000);
         });
     </script>
-
-
-
-
-        <!-- 3D 标签球逻辑 -->
+    
+    <!-- 3D 标签球逻辑 -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const container = "#tech-sphere";
