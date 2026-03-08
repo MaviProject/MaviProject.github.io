@@ -123,29 +123,114 @@ layout: null
         .holo-inner { width: 150px; height: 150px; position: absolute; border-radius: 50%; border: 1px dashed var(--neon-blue); animation: spin 8s linear infinite reverse; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 2. 瀑布流文档 (Masonry Docs) */
+                /* 2. 瀑布流文档 (Masonry Docs) - 改进版 */
         .docs-section { margin-bottom: 100px; }
-        .masonry-grid { column-count: 3; column-gap: 30px; }
-        @media (max-width: 1100px) { .masonry-grid { column-count: 2; } }
-        @media (max-width: 768px) { .masonry-grid { column-count: 1; } }
-        
-        .doc-card {
-            break-inside: avoid; background: rgba(5, 10, 15, 0.8); border: 1px solid rgba(255,255,255,0.1);
-            padding: 30px; margin-bottom: 30px; transition: 0.4s; position: relative; overflow: hidden;
+        .masonry-grid { 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
         }
-        .doc-card:hover { border-color: var(--neon-blue); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 242, 255, 0.15); }
-        .doc-card::after { content: ''; position: absolute; top: 0; right: 0; width: 30px; height: 30px; background: linear-gradient(225deg, rgba(0,242,255,0.2) 50%, transparent 50%); }
-        .doc-cat { font-size: 0.8rem; color: var(--neon-pink); font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 10px; display: block; text-transform: uppercase; }
-        .doc-title { font-size: 1.4rem; color: #fff; margin-bottom: 15px; font-weight: 700; }
-        .doc-excerpt { font-size: 0.95rem; color: #888; line-height: 1.6; margin-bottom: 20px; }
-        .doc-link { color: var(--neon-blue); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
-        .doc-link:hover { text-shadow: var(--border-glow); }
+        .doc-card {
+            flex: 1 1 calc(33.333% - 30px);
+            min-width: 280px;
+            max-width: 380px;
+            background: rgba(5, 10, 15, 0.8); 
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 30px; 
+            transition: 0.4s; 
+            position: relative; 
+            overflow: hidden;
+            break-inside: avoid;
+        }
+        .doc-card:hover { 
+            border-color: var(--neon-blue); 
+            transform: translateY(-10px); 
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.15); 
+        }
+        .doc-card::after { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            width: 30px; 
+            height: 30px; 
+            background: linear-gradient(225deg, rgba(0,242,255,0.2) 50%, transparent 50%); 
+        }
+        .doc-cat { 
+            font-size: 0.8rem; 
+            color: var(--neon-pink); 
+            font-family: 'Orbitron'; 
+            letter-spacing: 2px; 
+            margin-bottom: 10px; 
+            display: block; 
+            text-transform: uppercase; 
+        }
+        .doc-title { 
+            font-size: 1.4rem; 
+            color: #fff; 
+            margin-bottom: 15px; 
+            font-weight: 700; 
+            line-height: 1.3;
+        }
+        .doc-excerpt { 
+            font-size: 0.95rem; 
+            color: #888; 
+            line-height: 1.6; 
+            margin-bottom: 20px; 
+            min-height: 60px;
+        }
+        .doc-link { 
+            color: var(--neon-blue); 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 0.9rem; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .doc-link:hover { 
+            text-shadow: var(--border-glow); 
+        }
         
-        .view-all-btn { display: inline-block; margin-top: 20px; padding: 12px 30px; background: transparent; border: 2px solid var(--neon-blue); color: var(--neon-blue); text-decoration: none; font-weight: bold; transition: 0.3s; font-family: 'Orbitron', sans-serif; }
-        .view-all-btn:hover { background: var(--neon-blue); color: #000; box-shadow: var(--border-glow); }
-
+        .view-all-btn { 
+            display: inline-block; 
+            margin-top: 20px; 
+            padding: 12px 30px; 
+            background: transparent; 
+            border: 2px solid var(--neon-blue); 
+            color: var(--neon-blue); 
+            text-decoration: none; 
+            font-weight: bold; 
+            transition: 0.3s; 
+            font-family: 'Orbitron', sans-serif; 
+        }
+        .view-all-btn:hover { 
+            background: var(--neon-blue); 
+            color: #000; 
+            box-shadow: var(--border-glow); 
+        }
         
-        /* 2.5 专业领域 (Expertise) */
+        /* 响应式调整 */
+        @media (max-width: 1100px) {
+            .doc-card {
+                flex: 1 1 calc(50% - 30px);
+                max-width: calc(50% - 30px);
+            }
+        }
+        @media (max-width: 768px) {
+            .doc-card {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+            .doc-title {
+                font-size: 1.2rem;
+            }
+            .doc-excerpt {
+                min-height: auto;
+            }
+        }
+/* 2.5 专业领域 (Expertise) */
         .expertise-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -783,7 +868,7 @@ layout: null
             {% endfor %}
         ];
 
-        document.addEventListener('DOMContentLoaded', () => {
+                document.addEventListener('DOMContentLoaded', () => {
             const grid = document.getElementById('masonry-docs');
             if(rawArticles.length > 0) {
                 // 取最新的 6 篇文章展示在首页
@@ -796,8 +881,23 @@ layout: null
                         <a href="${doc.link}" class="doc-link">开始阅读 <i class="fas fa-arrow-right"></i></a>
                     </article>
                 `).join('');
+                
+                // 确保所有卡片高度相对一致
+                setTimeout(() => {
+                    const cards = document.querySelectorAll('.doc-card');
+                    let maxHeight = 0;
+                    cards.forEach(card => {
+                        const height = card.offsetHeight;
+                        if (height > maxHeight) maxHeight = height;
+                    });
+                    
+                    // 为所有卡片设置最小高度（避免差异太大）
+                    cards.forEach(card => {
+                        card.style.minHeight = (maxHeight - 20) + 'px';
+                    });
+                }, 100);
             } else {
-                grid.innerHTML = `<div style="color:var(--neon-pink); padding: 20px; font-family:'Orbitron';">NO_DATA_LOGS_FOUND_IN_SYSTEM_PAGES</div>`;
+                grid.innerHTML = `<div style="color:var(--neon-pink); padding: 20px; font-family:'Orbitron';text-align:center;">NO_DATA_LOGS_FOUND_IN_SYSTEM_PAGES</div>`;
             }
 
             // 滚动显现动画 (Intersection Observer)
@@ -805,9 +905,11 @@ layout: null
                 entries.forEach(entry => {
                     if(entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        observer.unobserve(entry.target);
                     }
                 });
+            }, { threshold: 0.2 });
+            document.querySelectorAll('.doc-card').forEach(card => observer.observe(card));
+        });
             }, { threshold: 0.1 });
 
             document.querySelectorAll('.reveal-fx').forEach(el => observer.observe(el));
